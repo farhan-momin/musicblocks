@@ -16,6 +16,10 @@
   outline: none;
 }
 
+body:not(.dark-mode) #canvas {
+  background-color: #ffffff;
+}
+
 body:not(.dark-mode) #helpfulSearch,
 body:not(.dark-mode) .ui-autocomplete {
     background-color: #fff !important;
