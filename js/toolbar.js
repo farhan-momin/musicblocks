@@ -731,10 +731,10 @@ class Toolbar {
      * @param {Function} rec_onclick
      * @returns {void}
      */  
-    updateRecordButton(rec_onclick) {
+    updateRecordButton(rec_onclic) {
         const Record = docById("record");
         const browser = fnBrowserDetect();
-        const hideIn = ["firefox", "safari"];
+        const hideIn = ["safari"];
     
         if (hideIn.includes(browser)) {
             Record.classList.add("hide");
@@ -743,7 +743,7 @@ class Toolbar {
     
         Record.style.display = "block";
         Record.innerHTML = `<i class="material-icons main">${RECORDBUTTON}</i>`;
-        Record.onclick = () => rec_onclick(this.activity);
+        Record.onclick = () => rec_onclic(this.activity);
     }
 
     /**
@@ -838,7 +838,7 @@ class Toolbar {
      * @param  {Function} setScroller - The function to set the scroller.
      * @returns {void}
      */
-    renderModeSelectIcon(onclick, rec_onclick, analytics_onclick, openPlugin_onclick, delPlugin_onclick, setScroller) {
+    renderModeSelectIcon(onclick, rec_onclic, analytics_onclick, openPlugin_onclick, delPlugin_onclick, setScroller) {
         const begIcon = docById("beginnerMode");
         const advIcon = docById("advancedMode");
 
@@ -853,7 +853,7 @@ class Toolbar {
                 if (!this.activity.beginnerMode) {
                     recordButton.style.display = "block";
                     this.updateRecordButton();
-                    recordButton.onclick = () => rec_onclick(this.activity);
+                    recordButton.onclick = () => rec_onclic(this.activity);
                 } else {
                     recordButton.style.display = "none";
                 }
