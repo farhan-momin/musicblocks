@@ -63,6 +63,7 @@ let MYDEFINES = [
     "p5.min",
     "p5.sound.min",
     "p5.dom.min",
+    "pitchdetect", //
     // 'mespeak',
     "Chart",
     "utils/utils",

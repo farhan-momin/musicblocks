@@ -463,6 +463,13 @@ function SampleWidget() {
             ""
         );
 
+        this._tuneBtn= widgetWindow.addButton(
+            "sort.svg",
+            ICONSIZE,
+            _("Tune"),
+            ""
+        );
+
         this._playbackBtn= widgetWindow.addButton(
             "playback.svg",
             ICONSIZE,
@@ -503,6 +510,8 @@ function SampleWidget() {
                 this.playback = false;
             }
         };
+
+        this._tuneBtn.onclick = () => { startPitchDetect(canvasCtx);}
 
         widgetWindow.sendToCenter();
         this.widgetWindow = widgetWindow;
@@ -914,6 +923,8 @@ function SampleWidget() {
         this.reconnectSynthsToAnalyser();
     };
 
+    var canvasCtx
+
     /**
      * Creates a canvas element and draws visual representations of sample data and reference tones.
      * @param {number} width - The width of the canvas.
@@ -927,64 +938,93 @@ function SampleWidget() {
         canvas.height = height;
         canvas.width = width;
         canvas.className = "samplerCanvas";
+        canvas.style.border = "4px solid gray";
+        canvas.style.borderRadius = "8px";
+        canvas.style.textAlign = "center";
+        canvas.style.paddingTop = "10px";
+
+        //Match the background color to the body's background color.
+        canvas.style.backgroundColor = 'white'; //or whatever the body background is.
+
         this.widgetWindow.getWidgetBody().appendChild(canvas);
-        const canvasCtx = canvas.getContext("2d");
+        canvasCtx = canvas.getContext("2d");
         canvasCtx.clearRect(0, 0, width, height);
 
-        const draw = () => {
-            this.drawVisualIDs[turtleIdx] = requestAnimationFrame(draw);
-            if (this.is_recording || (this.pitchAnalysers[turtleIdx] && (this.running || resized))) {
-                canvasCtx.fillStyle = "#FFFFFF";
-                canvasCtx.font = "10px Verdana";
-                this.verticalOffset = -canvas.height / 4;
-                this.zoomFactor = 40.0;
-                canvasCtx.fillRect(0, 0, width, height);
+        // const draw = () => {
+        //     this.drawVisualIDs[turtleIdx] = requestAnimationFrame(draw);
+        //     if (this.is_recording || (this.pitchAnalysers[turtleIdx] && (this.running || resized))) {
+        //         canvasCtx.fillStyle = "#FFFFFF";
+        //         canvasCtx.font = "10px Verdana";
+        //         this.verticalOffset = -canvas.height / 4;
+        //         this.zoomFactor = 40.0;
+        //         canvasCtx.fillRect(0, 0, width, height);
         
-                let oscText;
-                if (turtleIdx >= 0) {
-                    //.TRANS: The sound sample that the user uploads.
-                    oscText = this.sampleName != "" ? this.sampleName : _("sample");
-                }
-                canvasCtx.fillStyle = "#000000";
-                //.TRANS: The reference tone is a sound used for comparison.
-                canvasCtx.fillText(_("reference tone"), 10, 10);
-                canvasCtx.fillText(oscText, 10, canvas.height / 2 + 10);
+        //         let oscText;
+        //         if (turtleIdx >= 0) {
+        //             //.TRANS: The sound sample that the user uploads.
+        //             oscText = this.sampleName != "" ? this.sampleName : _("sample");
+        //         }
+        //         canvasCtx.fillStyle = "#000000";
+        //         //.TRANS: The reference tone is a sound used for comparison.
+        //         canvasCtx.fillText(_("reference tone"), 10, 10);
+        //         canvasCtx.fillText(oscText, 10, canvas.height / 2 + 10);
 
-                for (let turtleIdx = 0; turtleIdx < 2; turtleIdx += 1) {
-                    let dataArray;
-                    if (this.is_recording) {
-                        dataArray = turtleIdx === 0 
-                            ? this.pitchAnalysers[0].getValue()
-                            : this.activity.logo.synth.getWaveFormValues();
-                            console.log(dataArray);
-                    } else {
-                        dataArray = this.pitchAnalysers[turtleIdx].getValue();
-                    }
+        //         for (let turtleIdx = 0; turtleIdx < 2; turtleIdx += 1) {
+        //             let dataArray;
+        //             if (this.is_recording) {
+        //                 dataArray = turtleIdx === 0 
+        //                     ? this.pitchAnalysers[0].getValue()
+        //                     : this.activity.logo.synth.getWaveFormValues();
+        //                     console.log(dataArray);
+        //             } else {
+        //                 dataArray = this.pitchAnalysers[turtleIdx].getValue();
+        //             }
         
-                    const bufferLength = dataArray.length;
-                    const rbga = SAMPLEOSCCOLORS[turtleIdx];
-                    const sliceWidth = (width * this.zoomFactor) / bufferLength;
-                    canvasCtx.lineWidth = 2;
-                    canvasCtx.strokeStyle = rbga;
-                    canvasCtx.beginPath();
+        //             const bufferLength = dataArray.length;
+        //             const rbga = SAMPLEOSCCOLORS[turtleIdx];
+        //             const sliceWidth = (width * this.zoomFactor) / bufferLength;
+        //             canvasCtx.lineWidth = 2;
+        //             canvasCtx.strokeStyle = rbga;
+        //             canvasCtx.beginPath();
         
-                    let x = 0;
+        //             let x = 0;
                     
-                    for (let i = 0; i < bufferLength; i++) {
-                        const y = (height / 2) * (1 - dataArray[i]) + this.verticalOffset;
-                        if (i === 0) {
-                            canvasCtx.moveTo(x, y);
-                        } else {
-                            canvasCtx.lineTo(x, y);
-                        }
-                        x += sliceWidth;
-                    }
-                    canvasCtx.lineTo(canvas.width, canvas.height / 2);
-                    canvasCtx.stroke();
-                    this.verticalOffset = canvas.height / 4;
-                }
-            }
-        };
-        draw();
+        //             for (let i = 0; i < bufferLength; i++) {
+        //                 const y = (height / 2) * (1 - dataArray[i]) + this.verticalOffset;
+        //                 if (i === 0) {
+        //                     canvasCtx.moveTo(x, y);
+        //                 } else {
+        //                     canvasCtx.lineTo(x, y);
+        //                 }
+        //                 x += sliceWidth;
+        //             }
+        //             canvasCtx.lineTo(canvas.width, canvas.height / 2);
+        //             canvasCtx.stroke();
+        //             this.verticalOffset = canvas.height / 4;
+        //         }
+        //     }
+        // };
+        // draw();
+        canvasCtx.font = "16pt 'Alike', sans-serif";
+        canvasCtx.fillText("-- Hz", width / 2 - 30, 50); // Approximate position
+        canvasCtx.fillText("--", width / 2 - 20, 200); // Approximate position
+
+        // Example: Drawing the output canvas (assuming you have a separate canvas for it)
+        const outputCanvas = document.createElement("canvas");
+        outputCanvas.width = 300;
+        outputCanvas.height = 42;
+        this.widgetWindow.getWidgetBody().appendChild(outputCanvas); // Append to the widget body
+        const outputCtx = outputCanvas.getContext("2d");
+        outputCtx.clearRect(0, 0, 300, 42); // Clear the output canvas
+
+        // Example: Drawing detune text (approximating the HTML layout)
+        canvasCtx.font = "14pt 'Alike', sans-serif";
+        canvasCtx.fillText("-- cents", width / 2 - 40, 250); // Approximate position
+
+        
+        
+
     };
+
+
 }
