@@ -848,10 +848,12 @@ Turtles.TurtlesView = class {
             container.setAttribute("class", "tooltipped");
             container.setAttribute("data-tooltip", object.label);
             container.setAttribute("data-position", "bottom");
-            jQuery.noConflict()(".tooltipped").tooltip({
-                html: true,
-                delay: 100
-            });
+            requestIdleCallback(()=>{
+                jQuery.noConflict()(".tooltipped").tooltip({
+                    html: true,
+                    delay: 100
+                });
+            })
 
             container.onmouseover = () => {
                 if (!activity.loading) {
@@ -1138,10 +1140,12 @@ Turtles.TurtlesView = class {
         const __makeAllButtons = () => {
             let second = false;
             if (docById("buttoncontainerTOP")) {
-                jQuery.noConflict()(".tooltipped").tooltip("close");
-                docById("buttoncontainerTOP").parentElement.removeChild(
-                    docById("buttoncontainerTOP")
-                );
+                requestIdleCallback(()=>{
+                    jQuery.noConflict()(".tooltipped").tooltip("close");
+                    docById("buttoncontainerTOP").parentElement.removeChild(
+                        docById("buttoncontainerTOP")
+                    );                
+            })
                 second = true;
             }
             const cont = document.createElement("div");
@@ -1152,14 +1156,16 @@ Turtles.TurtlesView = class {
             __makeExpandButton();
             __makeClearButton();
             __makeGridButton();
-            jQuery
-                .noConflict()(".tooltipped")
-                .each(function () {
-                    jQuery.noConflict()(this).tooltip({
-                        html: true,
-                        delay: 100
+            requestIdleCallback(()=>{
+                jQuery
+                    .noConflict()(".tooltipped")
+                    .each(function () {
+                        jQuery.noConflict()(this).tooltip({
+                            html: true,
+                            delay: 100
+                        });
                     });
-                });
+            })
             this._locked = false;
         };
 
@@ -1212,7 +1218,9 @@ Turtles.TurtlesView = class {
                             .replace("STROKE", 20)
                     )
                 );
-            __makeAllButtons();
+            requestIdleCallback(()=>{
+                __makeAllButtons();
+            })
         };
         // Call the __makeBoundary2 function once the document is loaded
         /**

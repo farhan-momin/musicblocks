@@ -60,13 +60,13 @@ const RESPONSIVE_BREAKPOINT_MOBILE = 600;
 
 let MYDEFINES = [
     "utils/platformstyle",
-    "easeljs.min",
-    "tweenjs.min",
+    // "easeljs.min",
+    // "tweenjs.min",
     "preloadjs.min",
     "howler",
-    "p5.min",
-    "p5.sound.min",
-    "p5.dom.min",
+    // "p5.min",
+    // "p5.sound.min",
+    // "p5.dom.min",
     // 'mespeak',
     "Chart",
     "utils/utils",
@@ -93,7 +93,7 @@ let MYDEFINES = [
     "activity/basicblocks",
     "activity/blockfactory",
     "activity/piemenus",
-    "activity/planetInterface",
+    // "activity/planetInterface",
     "activity/rubrics",
     "activity/macros",
     "activity/SaveInterface",
@@ -156,7 +156,7 @@ let MYDEFINES = [
     "activity/blocks/EnsembleBlocks",
     "widgets/widgetWindows",
     "widgets/statistics",
-    "widgets/jseditor"
+    // "widgets/jseditor"
 ];
 
 if (_THIS_IS_MUSIC_BLOCKS_) {
@@ -164,9 +164,9 @@ if (_THIS_IS_MUSIC_BLOCKS_) {
         "widgets/modewidget",
         "widgets/meterwidget",
         "widgets/phrasemaker",
-        "widgets/arpeggio",
-        "widgets/aiwidget",
-        "widgets/aidebugger",
+        // "widgets/arpeggio",
+        // "widgets/aiwidget",
+        // "widgets/aidebugger",
         "widgets/pitchdrummatrix",
         "widgets/rhythmruler",
         "widgets/pitchstaircase",
@@ -175,13 +175,13 @@ if (_THIS_IS_MUSIC_BLOCKS_) {
         "widgets/pitchslider",
         "widgets/musickeyboard",
         "widgets/timbre",
-        "widgets/oscilloscope",
+        // "widgets/oscilloscope",
         "widgets/sampler",
-        "widgets/reflection",
+        // "widgets/reflection",
         "widgets/legobricks",
-        "activity/lilypond",
-        "activity/abc",
-        "activity/midi",
+        // "activity/lilypond",
+        // "activity/abc",
+        // "activity/midi",
         "activity/mxml"
     ];
     MYDEFINES = MYDEFINES.concat(MUSICBLOCKS_EXTRAS);
@@ -7685,10 +7685,13 @@ class Activity {
 const activity = new Activity();
 
 require(["domReady!"], doc => {
-    setTimeout(() => {
-        activity.setupDependencies();
-        activity.domReady(doc);
-    }, 5000);
+    // setTimeout(() => {
+        requestIdleCallback(()=>{
+
+            activity.setupDependencies();
+            activity.domReady(doc);
+        })
+    // }, 1000);
 });
 
 define(MYDEFINES, () => {
