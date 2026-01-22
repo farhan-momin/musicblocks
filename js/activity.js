@@ -5055,8 +5055,8 @@ class Activity {
 
             const time2 = new Date();
             const elapsedTime = time2.getTime() - time1.getTime();
-            const timeLeft = Math.max(6000 - elapsedTime);
-            setTimeout(this.showContents, timeLeft);
+            const timeLeft = Math.max(2000, elapsedTime);
+            setTimeout(this.showContents, 100);
         };
 
         /*

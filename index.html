@@ -591,15 +591,15 @@ document.addEventListener("DOMContentLoaded", init);
                 const intervalId = setInterval(function () {
                     loadingText.textContent = texts[index];
                     index = (index + 1) % texts.length;
-                }, 1500);
+                }, 100);
 
                 // Stop changing text and finalize loading after 6 seconds
                 setTimeout(function () {
                     clearInterval(intervalId);
                     loadingText.textContent = _("Loading Complete!");
                     loadingText.style.opacity = 1;
-                }, 6000);
-            }, 3000);
+                }, 100);
+            }, 100);
         });
 
     </script>
