@@ -32,6 +32,7 @@ const createMockElement = tagName => ({
     appendChild: jest.fn(),
     append: jest.fn(),
     innerHTML: "",
+    querySelectorAll: jest.fn().mockReturnValue([]),
     addEventListener: jest.fn(),
     className: "",
     insertCell: jest.fn().mockImplementation(() => createMockElement("TD")),
