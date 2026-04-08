@@ -1108,12 +1108,36 @@ function Synth() {
             }
             chunks = [];
             const url = URL.createObjectURL(blob);
-            // Prompt the user for the file name
-            const fileName = window.prompt(_("Enter file name"), _("recording"));
-            if (fileName) {
-                download(url, fileName + (platform.FF ? ".wav" : ".ogg"));
+            const t = text => (typeof window._ === "function" ? window._(text) : text);
+            const ext = platform.FF ? ".wav" : ".ogg";
+            const showCancelMessage = () => {
+                if (window.MBDialog && typeof window.MBDialog.alert === "function") {
+                    window.MBDialog.alert(t("Download cancelled."), t("Save recording"));
+                } else {
+                    alert(t("Download cancelled."));
+                }
+            };
+            const finishDownload = name => {
+                if (name === null || name.trim() === "") {
+                    showCancelMessage();
+                    return;
+                }
+
+                download(url, name + ext);
+            };
+
+            if (window.MBDialog && typeof window.MBDialog.prompt === "function") {
+                window.MBDialog.prompt({
+                    title: t("Save recording"),
+                    message: t("Filename:"),
+                    defaultValue: t("recording"),
+                    okText: t("Save"),
+                    cancelText: t("Cancel")
+                }).then(result => finishDownload(result));
             } else {
-                alert(_("Download cancelled."));
+                // Fallback to browser prompt if MBDialog is not available.
+                const fileName = window.prompt(t("Enter file name"), t("recording"));
+                finishDownload(fileName);
             }
         };
         // this.recorder.start();
