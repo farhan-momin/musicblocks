@@ -16,6 +16,7 @@
  * MA 02110-1335 USA.
  */
 
+/* eslint-disable no-redeclare */
 /*
    global
 
@@ -887,7 +888,7 @@ function TemperamentWidget() {
             try {
                 that.performEqualEdit(event);
             } catch {
-                activity.errorMsg(_("The Number of divisions is too large."), 3000);
+                that.activity.errorMsg(_("The Number of divisions is too large."), 3000);
             }
         });
 
@@ -1590,6 +1591,16 @@ function TemperamentWidget() {
             const temperament = keys[i];
             if (!isCustomTemperament(temperament)) {
                 const t = getTemperament(temperament);
+                // Ensure we have a valid temperament object with intervals
+                if (!t || !t.interval || !Array.isArray(t.interval)) {
+                    this.activity.errorMsg(
+                        _("Invalid temperament: ") +
+                            temperament +
+                            _(". Skipping to next temperament."),
+                        3000
+                    );
+                    continue;
+                }
                 const temperamentRatios = [];
                 for (let j = 0; j < t.interval.length; j++) {
                     intervals[j] = t.interval[j];
@@ -1869,7 +1880,7 @@ function TemperamentWidget() {
         const that = this;
         setTimeout(() => {
             that.activity.blocks.loadNewBlocks(newStack);
-            activity.textMsg(_("New action block generated."), 3000);
+            that.activity.textMsg(_("New action block generated."), 3000);
         }, 500);
 
         if (isCustomTemperament(this.inTemperament)) {
@@ -2265,6 +2276,14 @@ function TemperamentWidget() {
         const noteCell = widgetWindow.addButton("play-button.svg", ICONSIZE, _("Table"));
 
         let t = getTemperament(this.inTemperament);
+        // Ensure we have a valid temperament object
+        if (!t || !t.pitchNumber) {
+            that.activity.errorMsg(
+                _("Invalid temperament. Falling back to equal temperament."),
+                3000
+            );
+            t = getTemperament("equal");
+        }
         this.pitchNumber = t.pitchNumber;
         this.octaveChanged = false;
         this.scale = this.scale[0] + " " + this.scale[1];
@@ -2310,6 +2329,14 @@ function TemperamentWidget() {
                     // yet defined by the user then custom temperament
                     // behaves like equal temperament.
                     t = getTemperament("equal");
+                }
+                // Ensure t has a valid interval array before accessing it
+                if (!t || !t.interval || i >= t.interval.length) {
+                    that.activity.errorMsg(
+                        _("Invalid temperament interval data. Skipping note ") + i,
+                        3000
+                    );
+                    continue;
                 }
                 str[i] = getNoteFromInterval(startingPitch, t.interval[i]);
                 this.notes[i] = str[i];
