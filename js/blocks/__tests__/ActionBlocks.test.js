@@ -140,6 +140,7 @@ describe("ActionBlocks", () => {
                 }))
             },
             errorMsg: jest.fn(),
+            textMsg: jest.fn(),
             refreshCanvas: jest.fn(),
             stage: {
                 dispatchEvent: jest.fn()
@@ -442,7 +443,7 @@ describe("ActionBlocks", () => {
             jest.spyOn(block, "getURL").mockReturnValue("http://localhost?outurl=http://cb");
             block.flow([100]);
             if (onReadyCallback) onReadyCallback();
-            expect(global.alert).toHaveBeenCalledWith("ok");
+            expect(activity.textMsg).toHaveBeenCalledWith("ok");
         });
 
         test("does not post when args length is not 1", () => {
