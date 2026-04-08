@@ -15,10 +15,9 @@
    i18nSolfege, NUMBERBLOCKDEFAULT, TEXTWIDTH, STRINGLEN,
    DEFAULTBLOCKSCALE, SVG, DISABLEDFILLCOLOR, DISABLEDSTROKECOLOR,
    PALETTEFILLCOLORS, PALETTESTROKECOLORS, last, getTextWidth,
-   STANDARDBLOCKHEIGHT, CLOSEICON, BUILTINPALETTES,
-   safeSVG, blockIsMacro, getMacroExpansion,
-   base64Encode, StatusMatrix, activity
-   cameraPALETTE, mediaPALETTE, videoPALETTE
+   STANDARDBLOCKHEIGHT, CLOSEICON, BUILTINPALETTES, base64Encode,
+   safeSVG, blockIsMacro, getMacroExpansion, StatusMatrix,
+   activity, cameraPALETTE, mediaPALETTE, videoPALETTE
 */
 
 /* exported Palettes, initPalettes */
@@ -102,6 +101,10 @@ class Palettes {
         this._navBlockIndex = 0;
         this._navPaletteBlockIndex = 0; // For navigating actual blocks in the right panel
         this._keyboardNavActive = false;
+        this._menuOpenTimeout = null;
+        // Tracks whether the palette was collapsed before Tab focus entered,
+        // so we can restore its state when focus leaves.
+        this._wasCollapsedBeforeFocus = false;
     }
 
     init() {
@@ -250,6 +253,28 @@ class Palettes {
             }
         });
 
+        // Auto-expand the palette when it receives Tab focus (if it was collapsed),
+        // and restore the previous state when focus leaves.
+        palette.addEventListener("focus", () => {
+            // Record the state at the moment Tab focus enters.
+            this._wasCollapsedBeforeFocus = this.collapsed;
+            // If the palette is collapsed, open it so the user can see it.
+            if (this.collapsed) {
+                this.toggleCollapse();
+            }
+        });
+
+        palette.addEventListener("focusout", event => {
+            // relatedTarget is where focus is moving to.
+            // If it's still inside the palette, do nothing.
+            if (palette.contains(event.relatedTarget)) return;
+            // Restore the palette to the state it was in before Tab focus entered.
+            if (this._wasCollapsedBeforeFocus) {
+                this.toggleCollapse();
+            }
+            this._wasCollapsedBeforeFocus = false;
+        });
+
         // Clear keyboard nav highlight on mouse movement and restore mouse hover
         palette.addEventListener("mousemove", () => {
             if (this._keyboardNavActive) {
@@ -326,6 +351,50 @@ class Palettes {
             el.style.backgroundColor = platformColor.paletteBackground;
             delete el.dataset.keyboardFocus;
         });
+    }
+
+    /**
+     * Clears any delayed hover-triggered palette open so it cannot fire
+     * after keyboard focus has already moved to another zone.
+     */
+    _clearPendingMenuOpen() {
+        if (this._menuOpenTimeout !== null) {
+            clearTimeout(this._menuOpenTimeout);
+            this._menuOpenTimeout = null;
+        }
+    }
+
+    /**
+     * Resets palette keyboard navigation and optionally closes open menus.
+     * Used when focus leaves the palette via Tab or mouse interaction.
+     *
+     * @param {{closeMenus?: boolean, blur?: boolean}} options
+     * @returns {void}
+     */
+    resetKeyboardNavigation(options = {}) {
+        const { closeMenus = false, blur = false } = options;
+
+        this._keyboardNavActive = false;
+        this._navSection = "type";
+        this._navTypeIndex = 0;
+        this._navBlockIndex = 0;
+        this._navPaletteBlockIndex = 0;
+        this.activePalette = null;
+        this._clearPendingMenuOpen();
+        this._clearKeyboardFocus();
+
+        if (closeMenus) {
+            for (const name in this.dict) {
+                if (this.dict[name] && typeof this.dict[name].hideMenu === "function") {
+                    this.dict[name].hideMenu();
+                }
+            }
+            this._hideMenus();
+        }
+
+        if (blur) {
+            docById("palette")?.blur?.();
+        }
     }
 
     /**
@@ -851,6 +920,7 @@ class Palettes {
         // Hide the menu buttons and the palettes themselves.
 
         this.activity.hideSearchWidget(true);
+        this.activePalette = null;
 
         if (docById("PaletteBody"))
             docById("PaletteBody").parentNode.removeChild(docById("PaletteBody"));
@@ -987,19 +1057,20 @@ class Palettes {
 
     // Palette Button event handlers
     _loadPaletteButtonHandler(name, row) {
-        let timeout;
-
         row.onmouseover = () => {
             if (name === "search") {
                 document.body.style.cursor = "text";
             } else {
                 document.body.style.cursor = "pointer";
-                clearTimeout(timeout);
-                timeout = setTimeout(() => this.showPalette(name), 400);
+                this._clearPendingMenuOpen();
+                this._menuOpenTimeout = setTimeout(() => {
+                    this._menuOpenTimeout = null;
+                    this.showPalette(name);
+                }, 400);
             }
         };
 
-        row.onmouseout = () => clearTimeout(timeout);
+        row.onmouseout = () => this._clearPendingMenuOpen();
 
         row.onclick = () => {
             if (name == "search") {
@@ -1956,7 +2027,7 @@ class Palette {
                 // Add variables first
                 for (let i = 0; i < foundVariables.length; i++) {
                     const [blockId, blockType] = foundVariables[i];
-                    const block = activity.blocks.blockList[blockId];
+                    const block = this.activity.blocks.blockList[blockId];
                     const isLastVar = i === foundVariables.length - 1;
                     const hasBoxes = boxBlocks.length > 0;
 
@@ -1987,7 +2058,7 @@ class Palette {
                 // Then add box blocks
                 for (let i = 0; i < boxBlocks.length; i++) {
                     const boxBlockId = boxBlocks[i];
-                    const boxBlock = activity.blocks.blockList[boxBlockId];
+                    const boxBlock = this.activity.blocks.blockList[boxBlockId];
 
                     statusBlocks.push([
                         lastBlockIndex + 1,
