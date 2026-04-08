@@ -2510,14 +2510,25 @@ class FocusCycleManager {
             const palette = document.getElementById("palette");
             if (!palette) return;
             if (container) container.classList.add("focus-zone-active");
-            // Give native focus to the palette container (it has tabindex).
-            palette.focus({ preventScroll: true });
 
             // Sync palette.js's internal state so arrow keys work immediately.
+            let p = null;
             try {
-                const p = this._getActivity()?.palettes;
+                p = this._getActivity()?.palettes;
                 if (p) {
                     p._keyboardNavActive = true;
+                }
+            } catch {
+                // Palette keyboard state sync is best-effort.
+            }
+
+            // Give native focus to the palette container (it has tabindex).
+            // This must happen after palette.js knows we arrived via keyboard,
+            // otherwise the collapsed palette will not auto-expand on Tab.
+            palette.focus({ preventScroll: true });
+
+            try {
+                if (p) {
                     // Only set to blocks section if there are rows and nothing is already focused.
                     const listBody = palette.children[0]?.children[1]?.children[1];
                     const rows = listBody ? Array.from(listBody.children) : [];
