@@ -19,28 +19,20 @@
    VIDEOVALUE, last, getIntervalDirection, getIntervalNumber,
    mixedNumber, rationalToFraction, doStopVideoCam, StatusMatrix,
    getStatsFromNotation, delayExecution, DEFAULTVOICE, performanceTracker,
-   requirejs, window, define, DEFAULTVOLUME, PREVIEWVOLUME, DEFAULTDELAY,
+   requirejs, define, DEFAULTVOLUME, PREVIEWVOLUME, DEFAULTDELAY,
    OSCVOLUMEADJUSTMENT, TONEBPM, TARGETBPM, TURTLESTEP, NOTEDIV,
-   MIN_HIGHLIGHT_DURATION_MS, NOMICERRORMSG, NANERRORMSG, NOSTRINGERRORMSG,
-   NOBOXERRORMSG, NOACTIONERRORMSG, NOINPUTERRORMSG, NOSQRTERRORMSG,
-   ZERODIVIDEERRORMSG, EMPTYHEAPERRORMSG, POSNUMBER,
-   NOTATIONNOTE, NOTATIONDURATION, NOTATIONDOTCOUNT,
-   NOTATIONTUPLETVALUE, NOTATIONROUNDDOWN, NOTATIONINSIDECHORD,
-   NOTATIONSTACCATO
+   MIN_HIGHLIGHT_DURATION_MS,
+   NOMICERRORMSG, NANERRORMSG, NOSTRINGERRORMSG, NOBOXERRORMSG,
+   NOACTIONERRORMSG, NOINPUTERRORMSG, NOSQRTERRORMSG, ZERODIVIDEERRORMSG,
+   EMPTYHEAPERRORMSG, INVALIDPITCH, POSNUMBER, NOTATIONNOTE, NOTATIONDURATION,
+   NOTATIONDOTCOUNT, NOTATIONTUPLETVALUE, NOTATIONROUNDDOWN,
+   NOTATIONINSIDECHORD, NOTATIONSTACCATO
  */
 
 /*
    exported
 
-   DEFAULTVOLUME, PREVIEWVOLUME, DEFAULTDELAY,
-   OSCVOLUMEADJUSTMENT, TONEBPM, TARGETBPM, TURTLESTEP, NOTEDIV,
-   MIN_HIGHLIGHT_DURATION_MS,
-   NOMICERRORMSG, NANERRORMSG, NOSTRINGERRORMSG, NOBOXERRORMSG,
-   NOACTIONERRORMSG, NOINPUTERRORMSG, NOSQRTERRORMSG,
-   ZERODIVIDEERRORMSG, EMPTYHEAPERRORMSG, INVALIDPITCH, POSNUMBER,
-   NOTATIONNOTE, NOTATIONDURATION, NOTATIONDOTCOUNT,
-   NOTATIONTUPLETVALUE, NOTATIONROUNDDOWN, NOTATIONINSIDECHORD,
-   NOTATIONSTACCATO
+   Queue, Logo, LogoDependencies
  */
 
 // Constants moved to js/logoconstants.js to resolve circular dependency
@@ -1854,12 +1846,18 @@ class Logo {
 
             // We don't update parameter blocks when running full speed.
             if (logo.turtleDelay !== 0) {
+                let updatedParameterBlocks = false;
                 for (const pblk in tur.parameterQueue) {
                     logo.activity.blocks.updateParameterBlock(
                         logo,
                         turtle,
                         tur.parameterQueue[pblk]
                     );
+                    updatedParameterBlocks = true;
+                }
+
+                if (updatedParameterBlocks) {
+                    logo.activity.refreshCanvas();
                 }
             }
 

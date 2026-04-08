@@ -37,7 +37,7 @@
    - js/piemenus.js
         piemenuBlockContext
    - js/protoblocks.js
-        ProtoBlock 
+        ProtoBlock
    - js/utils/mathutils.js
         MathUtility
    - js/utils/utils.js
@@ -2775,7 +2775,6 @@ class Blocks {
                 topBlockLoop += 1;
                 if (topBlockLoop > 2 * this.blockList.length) {
                     /** Could happen if the block data is malformed. */
-
                     console.debug("infinite loop finding topBlock?");
                     if (myBlock.garbage) {
                         console.debug(myBlock.blockIndex + " " + myBlock.name);
@@ -7307,7 +7306,6 @@ class Blocks {
                 }
 
                 this.blockList[blk].container.updateCache();
-                this.activity.refreshCanvas();
             }
         };
 
