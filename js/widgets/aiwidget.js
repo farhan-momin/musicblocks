@@ -244,15 +244,19 @@ function AIWidget() {
     const _indexMaps = new WeakMap();
     function searchIndexForMusicBlock(array, x) {
         let map = _indexMaps.get(array);
-        if (!map) {
+        // Cache an index map on the array using WeakMap to convert O(n) array scanning
+        // into O(1) map lookups. Rebuild the map if the array length changes.
+        if (!map || array.length !== map.size) {
             map = new Map();
             for (let i = 0; i < array.length; i++) {
-                map.set(array[i][0], i);
+                if (array[i] && array[i][0] !== undefined) {
+                    map.set(array[i][0], i);
+                }
             }
             _indexMaps.set(array, map);
         }
-        const idx = map.get(x);
-        return idx !== undefined ? idx : -1;
+        const index = map.get(x);
+        return index !== undefined ? index : -1;
     }
 
     this._parseABC = async function (tune) {
@@ -684,11 +688,8 @@ function AIWidget() {
                 }
             }
 
-            const lineBlock = staffBlocksMap[staffIndex].baseBlocks.reduce(
-                (acc, curr) => acc.concat(curr),
-                []
-            );
-            const flattenedLineBlock = lineBlock.flat(); // Flatten the multidimensional array
+            // Flatten the multidimensional array (equivalent to flat(1) + flat(1))
+            const flattenedLineBlock = staffBlocksMap[staffIndex].baseBlocks.flat(2);
             const combinedBlock = [...staffBlocksMap[staffIndex].startBlock, ...flattenedLineBlock];
 
             finalBlock.push(...staffBlocksMap[staffIndex].startBlock);
