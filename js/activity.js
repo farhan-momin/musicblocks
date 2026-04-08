@@ -4220,8 +4220,6 @@ class Activity {
 
                 container.style.width = windowWidth + "px";
                 container.style.height = windowHeight + "px";
-                canvas.width = windowWidth;
-                canvas.height = windowHeight;
                 overCanvas.width = canvas.width;
                 overCanvas.height = canvas.height;
                 canvasHolder.width = canvas.width;
