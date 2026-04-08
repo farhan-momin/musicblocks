@@ -105,6 +105,7 @@ class Palettes {
         // Tracks whether the palette was collapsed before Tab focus entered,
         // so we can restore its state when focus leaves.
         this._wasCollapsedBeforeFocus = false;
+        this._expandedForKeyboardFocus = false;
     }
 
     init() {
@@ -256,11 +257,22 @@ class Palettes {
         // Auto-expand the palette when it receives Tab focus (if it was collapsed),
         // and restore the previous state when focus leaves.
         palette.addEventListener("focus", () => {
+            // Mouse clicks can also focus the palette container. Only auto-expand
+            // when focus was entered via keyboard navigation.
+            if (!this._keyboardNavActive) {
+                this._wasCollapsedBeforeFocus = false;
+                this._expandedForKeyboardFocus = false;
+                return;
+            }
+
             // Record the state at the moment Tab focus enters.
             this._wasCollapsedBeforeFocus = this.collapsed;
+            this._expandedForKeyboardFocus = false;
+
             // If the palette is collapsed, open it so the user can see it.
             if (this.collapsed) {
                 this.toggleCollapse();
+                this._expandedForKeyboardFocus = true;
             }
         });
 
@@ -269,10 +281,15 @@ class Palettes {
             // If it's still inside the palette, do nothing.
             if (palette.contains(event.relatedTarget)) return;
             // Restore the palette to the state it was in before Tab focus entered.
-            if (this._wasCollapsedBeforeFocus) {
+            if (
+                this._expandedForKeyboardFocus &&
+                this._wasCollapsedBeforeFocus &&
+                !this.collapsed
+            ) {
                 this.toggleCollapse();
             }
             this._wasCollapsedBeforeFocus = false;
+            this._expandedForKeyboardFocus = false;
         });
 
         // Clear keyboard nav highlight on mouse movement and restore mouse hover
