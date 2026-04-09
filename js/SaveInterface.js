@@ -273,10 +273,10 @@ class SaveInterface {
         }
 
         file = file
-            .replace(new RegExp("{{ project_description }}", "g"), description)
-            .replace(new RegExp("{{ project_name }}", "g"), name)
-            .replace(new RegExp("{{ data }}", "g"), data)
-            .replace(new RegExp("{{ project_image }}", "g"), image);
+            .replace(new RegExp("{{ project_description }}", "g"), escapeHTML(description))
+            .replace(new RegExp("{{ project_name }}", "g"), escapeHTML(name))
+            .replace(new RegExp("{{ data }}", "g"), escapeHTML(data))
+            .replace(new RegExp("{{ project_image }}", "g"), escapeHTML(image));
         return file;
     }
 
