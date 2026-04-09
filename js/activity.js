@@ -1659,6 +1659,10 @@ class Activity {
                     helpfulWheelDiv.style.display = "none";
                     this.__tick();
                 }
+
+                if (this.cleanupIdleWatcher) {
+                    this.cleanupIdleWatcher();
+                }
             };
 
             if (skipConfirmation) {
@@ -2187,6 +2191,10 @@ class Activity {
                     }
                     break;
                 }
+            }
+
+            if (this.cleanupIdleWatcher) {
+                this.cleanupIdleWatcher();
             }
         };
 
@@ -3035,6 +3043,11 @@ class Activity {
 
             let lastActivity = Date.now();
             this.isAppIdle = false;
+
+            // Prevent duplicate intervals
+            if (this._idleWatcherIntervalId) {
+                clearInterval(this._idleWatcherIntervalId);
+            }
 
             // Wake up function - restores full framerate
             // Stored as instance property for cleanup
