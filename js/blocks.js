@@ -27,7 +27,7 @@
    getVoiceSynthName, i18nSolfege, last, MathUtility, mixedNumber,
    piemenuBlockContext, prepareMacroExports, ProtoBlock,
     setOctaveRatio, splitScaleDegree, splitSolfege, updateTemperaments,
-    docById, define
+    docById, define, BlocksDependencies
 */
 
 /* global showZoomOverlay */
@@ -153,13 +153,85 @@ const ALLOWED_CONNECTIONS = new Set([
  */
 
 class Blocks {
-    constructor(activity) {
-        this.activity = activity;
-        this.storage = this.activity.storage;
-        this.trashcan = this.activity.trashcan;
-        this.turtles = this.activity.turtles;
-        this.boundary = this.activity.boundary;
-        this.macroDict = this.activity.macroDict;
+    constructor(activityOrDeps) {
+        // Build dependencies container
+        const isExplicitDeps =
+            activityOrDeps &&
+            activityOrDeps.storage &&
+            activityOrDeps.turtles &&
+            activityOrDeps.tick;
+
+        if (isExplicitDeps) {
+            this.deps = activityOrDeps;
+            // Build a shim for activity facade to maintain backward compatibility
+            // for any internal references that still use this.activity
+            const deps = this.deps;
+            this.activity = {
+                storage: deps.storage,
+                trashcan: deps.trashcan,
+                turtles: deps.turtles,
+                boundary: deps.boundary,
+                macroDict: deps.macroDict,
+                get palettes() {
+                    return deps.palettes;
+                },
+                get logo() {
+                    return deps.logo;
+                },
+                blocksContainer: deps.blocksContainer,
+                canvas: deps.canvas,
+                refreshCanvas: () => deps.refreshCanvas(),
+                errorMsg: (msg, blk) => deps.errorMsg(msg, blk),
+                setSelectionMode: selection => deps.setSelectionMode(selection),
+                stopLoadAnimation: () => deps.stopLoadAnimation(),
+                setHomeContainers: val => deps.setHomeContainers(val),
+                __tick: () => deps.tick(),
+                blocks: this
+            };
+        } else {
+            this.activity = activityOrDeps;
+            // Create a deps view over the activity object
+            const activity = this.activity;
+            this.deps = {
+                storage: activity.storage,
+                trashcan: activity.trashcan,
+                turtles: activity.turtles,
+                boundary: activity.boundary,
+                macroDict: activity.macroDict,
+                get palettes() {
+                    return activity.palettes;
+                },
+                get logo() {
+                    return activity.logo;
+                },
+                blocksContainer: activity.blocksContainer,
+                canvas: activity.canvas,
+                refreshCanvas: () => activity.refreshCanvas(),
+                errorMsg: (msg, blk) => activity.errorMsg(msg, blk),
+                setSelectionMode: selection => activity.setSelectionMode(selection),
+                stopLoadAnimation: () => activity.stopLoadAnimation(),
+                setHomeContainers: val => activity.setHomeContainers(val),
+                tick: () => activity.__tick()
+            };
+        }
+
+        this.storage = this.deps.storage;
+        this.trashcan = this.deps.trashcan;
+        this.turtles = this.deps.turtles;
+        this.boundary = this.deps.boundary;
+        this.macroDict = this.deps.macroDict;
+
+        // Use getters for dependencies that may be initialized after Blocks
+        Object.defineProperty(this, "palettes", {
+            get: () => this.deps.palettes,
+            configurable: true,
+            enumerable: true
+        });
+        Object.defineProperty(this, "logo", {
+            get: () => this.deps.logo,
+            configurable: true,
+            enumerable: true
+        });
 
         /** Did the user right click? */
         this.stageClick = false;
