@@ -184,7 +184,13 @@ function setupPitchActions(activity) {
             number = Math.abs(number);
 
             const obj = keySignatureToMode(tur.singer.keySignature);
-            const modeLength = MUSICALMODES[obj[1]].length;
+            let modeLength;
+
+            if (isCustomTemperament(activity.logo.synth.inTemperament)) {
+                modeLength = Singer.IntervalsActions.getTemperamentLength();
+            } else {
+                modeLength = MUSICALMODES[obj[1]].length;
+            }
             let scaleDegree;
 
             // Choose a reference based on the key selected.
