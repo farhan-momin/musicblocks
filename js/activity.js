@@ -28,7 +28,7 @@ try {
 /*
    global
 
-   ALTO, analyzeProject, BASS, BIGGERBUTTON, BIGGERDISABLEBUTTON,
+   ALTO, analyzeProject, BASS, BIGGERBUTTON, BIGGERDISABLEBUTTON, debugLog,
    ActivityContext,
    Boundary, CARTESIAN, changeImage, closeWidgets,
    COLLAPSEBLOCKSBUTTON, COLLAPSEBUTTON, createDefaultStack,
@@ -91,6 +91,7 @@ let MYDEFINES = [
     // "Chart",
     "utils/utils",
     "utils/retryWithBackoff",
+    "utils/debugLog",
     "activity/artwork",
     "widgets/status",
     "utils/munsell",
@@ -1287,7 +1288,7 @@ class Activity {
                     }
 
                     setTimeout(() => {
-                        console.log("Saving help artwork: " + name + "_block.svg");
+                        debugLog("Saving help artwork: " + name + "_block.svg");
                         const svg = "data:image/svg+xml;utf8," + that.printBlockSVG();
                         that.save.download("svg", svg, name + "_block.svg");
                     }, 500);
@@ -2033,7 +2034,7 @@ class Activity {
                 let recordedChunks = [];
                 mediaRecorder = new MediaRecorder(stream);
                 stream.oninactive = function () {
-                    console.log("Recording is ready to save");
+                    debugLog("Recording is ready to save");
                     stopRec();
                     flag = 0;
                 };
@@ -2053,7 +2054,7 @@ class Activity {
 
                 mediaRecorder.start(200);
                 setTimeout(() => {
-                    console.log("Resizing for Record", that.canvas.height);
+                    debugLog("Resizing for Record", that.canvas.height);
                     that._onResize();
                 }, 500);
                 return mediaRecorder;
@@ -2513,15 +2514,15 @@ class Activity {
                     const name =
                         this.palettes.dict[this.palettes.activePalette].protoList[i]["name"];
                     if (name in obj["FLOWPLUGINS"]) {
-                        console.log("deleting " + name);
+                        debugLog("deleting " + name);
                         delete obj["FLOWPLUGINS"][name];
                     }
                     if (name in obj["BLOCKPLUGINS"]) {
-                        console.log("deleting " + name);
+                        debugLog("deleting " + name);
                         delete obj["BLOCKPLUGINS"][name];
                     }
                     if (name in obj["ARGPLUGINS"]) {
-                        console.log("deleting " + name);
+                        debugLog("deleting " + name);
                         delete obj["ARGPLUGINS"][name];
                     }
                 }
@@ -3114,7 +3115,7 @@ class Activity {
                     if (!this.isAppIdle) {
                         this.isAppIdle = true;
                         createjs.Ticker.framerate = IDLE_FPS;
-                        console.log("⚡ Idle mode: Throttling to 1 FPS to save battery");
+                        debugLog("⚡ Idle mode: Throttling to 1 FPS to save battery");
                     }
                 } else if (this.isAppIdle && isMusicPlaying) {
                     // Music started playing - wake up immediately
@@ -6169,10 +6170,10 @@ class Activity {
             this.trebleBitmap.updateCache();
             this._hideAccidentals();
 
-            console.log(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1]);
+            debugLog(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1]);
             const scale = buildScale(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1])[0];
 
-            console.log(scale);
+            debugLog(scale);
             const _sharps = [
                 "F" + SHARP,
                 "C" + SHARP,
@@ -6236,10 +6237,10 @@ class Activity {
             this.grandBitmap.updateCache();
             this._hideAccidentals();
 
-            console.log(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1]);
+            debugLog(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1]);
             const scale = buildScale(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1])[0];
 
-            console.log(scale);
+            debugLog(scale);
             const _sharps = [
                 "F" + SHARP,
                 "C" + SHARP,
@@ -6301,10 +6302,10 @@ class Activity {
             this.sopranoBitmap.updateCache();
             this._hideAccidentals();
 
-            console.log(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1]);
+            debugLog(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1]);
             const scale = buildScale(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1])[0];
 
-            console.log(scale);
+            debugLog(scale);
             const _sharps = [
                 "F" + SHARP,
                 "C" + SHARP,
@@ -6372,10 +6373,10 @@ class Activity {
             this.altoBitmap.updateCache();
             this._hideAccidentals();
 
-            console.log(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1]);
+            debugLog(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1]);
             const scale = buildScale(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1])[0];
 
-            console.log(scale);
+            debugLog(scale);
             const _sharps = [
                 "F" + SHARP,
                 "C" + SHARP,
@@ -6438,10 +6439,10 @@ class Activity {
             this.tenorBitmap.updateCache();
             this._hideAccidentals();
 
-            console.log(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1]);
+            debugLog(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1]);
             const scale = buildScale(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1])[0];
 
-            console.log(scale);
+            debugLog(scale);
             const _sharps = [
                 "F" + SHARP,
                 "C" + SHARP,
@@ -6505,10 +6506,10 @@ class Activity {
             this.bassBitmap.updateCache();
             this._hideAccidentals();
 
-            console.log(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1]);
+            debugLog(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1]);
             const scale = buildScale(this.KeySignatureEnv[0] + " " + this.KeySignatureEnv[1])[0];
 
-            console.log(scale);
+            debugLog(scale);
             const _sharps = [
                 "F" + SHARP,
                 "C" + SHARP,
@@ -6637,7 +6638,7 @@ class Activity {
                                         this.blocks.blockList[myBlock.connections[1]].value;
                                 }
 
-                                console.log(customName);
+                                debugLog(customName);
                                 args = {
                                     customName: customName,
                                     customTemperamentNotes: getTemperament(customName),
@@ -8131,7 +8132,7 @@ class Activity {
                     await ensureABCJS();
                     const tunebook = new ABCJS.parseOnly(abcData);
 
-                    console.log(tunebook);
+                    debugLog(tunebook);
                     tunebook.forEach(tune => {
                         //call parseABC to parse abcdata to MB json
                         this.parseABC(tune);
