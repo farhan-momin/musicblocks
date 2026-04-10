@@ -7200,6 +7200,9 @@ class Activity {
          * Shows help page
          */
         const showHelp = activity => {
+            if (window.widgetWindows?.isOpen("keyboard-shortcuts")) {
+                window.widgetWindows.clear("keyboard-shortcuts");
+            }
             activity._showHelp();
         };
 
@@ -7207,6 +7210,251 @@ class Activity {
             // Will show welcome page by default.
             await lazyLoad("widgets/help");
             new HelpWidget(this, false);
+        };
+
+        const showKeyboardShortcuts = activity => {
+            if (window.widgetWindows?.isOpen("help")) {
+                window.widgetWindows.clear("help");
+            }
+            activity._showKeyboardShortcuts();
+        };
+
+        this._showKeyboardShortcuts = () => {
+            const platformKeys = (windowsKeys, macKeys = windowsKeys) =>
+                `${_("Windows/Linux")}: ${windowsKeys}\n${_("Mac")}: ${macKeys}`;
+
+            const shortcutSections = [
+                {
+                    title: _("Workspace"),
+                    items: [
+                        {
+                            keys: platformKeys("Alt + R", "Option + R"),
+                            action: _("Play project")
+                        },
+                        {
+                            keys: platformKeys("Alt + S", "Option + S"),
+                            action: _("Stop project")
+                        },
+                        {
+                            keys: platformKeys("Alt + Enter", "Option + Enter"),
+                            action: _("Play or stop depending on the current state")
+                        },
+                        {
+                            keys: platformKeys("Space", "Space"),
+                            action: _("Play or stop when no text input or widget is active")
+                        },
+                        {
+                            keys: platformKeys("Shift + Space", "Shift + Space"),
+                            action: _("Toggle stage scale")
+                        },
+                        {
+                            keys: platformKeys("Home", "Home"),
+                            action: _("Jump to home position")
+                        },
+                        {
+                            keys: platformKeys("End", "End"),
+                            action: _("Jump to the bottom of the workspace")
+                        },
+                        {
+                            keys: platformKeys("Page Up", "Page Up"),
+                            action: _("Scroll workspace up")
+                        },
+                        {
+                            keys: platformKeys("Page Down", "Page Down"),
+                            action: _("Scroll workspace down")
+                        },
+                        {
+                            keys: platformKeys("Esc", "Esc"),
+                            action: _("Hide block search when it is open")
+                        },
+                        {
+                            keys: platformKeys("d,r,m,f,s,l,t", "d,r,m,f,s,l,t"),
+                            action: _(
+                                "You can type d to create a do block and r to create a re block etc."
+                            )
+                        }
+                    ]
+                },
+                {
+                    title: _("Editing"),
+                    items: [
+                        {
+                            keys: platformKeys("Alt + C", "Option + C"),
+                            action: _("Copy selected stack")
+                        },
+                        {
+                            keys: platformKeys("Alt + V", "Option + V"),
+                            action: _("Paste previous stack")
+                        },
+                        {
+                            keys: platformKeys("Ctrl + V", "Control + V"),
+                            action: _("Open the JSON paste box")
+                        },
+                        {
+                            keys: platformKeys("Enter", "Enter"),
+                            action: _("Paste JSON when the paste box is focused")
+                        },
+                        {
+                            keys: platformKeys("Delete", "Delete"),
+                            action: _("Extract the active block")
+                        },
+                        {
+                            keys: platformKeys("Alt + E", "Option + E"),
+                            action: _("Clear workspace")
+                        },
+                        {
+                            keys: platformKeys("Alt + B", "Option + B"),
+                            action: _("Save block artwork")
+                        },
+                        {
+                            keys: platformKeys("Alt + H", "Option + H"),
+                            action: _("Save block help")
+                        }
+                    ]
+                },
+                {
+                    title: _("Navigation"),
+                    items: [
+                        {
+                            keys: platformKeys("Tab / Shift + Tab", "Tab / Shift + Tab"),
+                            action: _("Move focus between the toolbar, palettes, and workspace")
+                        },
+                        {
+                            keys: platformKeys(_("Arrow keys"), _("Arrow keys")),
+                            action: _(
+                                "Move the active block, scroll palettes, adjust the tempo widget, or pan the workspace depending on context"
+                            )
+                        },
+                        {
+                            keys: platformKeys("/", "/"),
+                            action: _("Pan workspace right when horizontal scrolling is enabled")
+                        },
+                        {
+                            keys: platformKeys("\\", "\\"),
+                            action: _("Pan workspace left when horizontal scrolling is enabled")
+                        }
+                    ]
+                },
+                {
+                    title: _("Toolbar"),
+                    items: [
+                        {
+                            keys: platformKeys(
+                                _("Arrow Left / Arrow Right"),
+                                _("Arrow Left / Arrow Right")
+                            ),
+                            action: _("Move focus within the current toolbar")
+                        },
+                        {
+                            keys: platformKeys(
+                                _("Arrow Up / Arrow Down"),
+                                _("Arrow Up / Arrow Down")
+                            ),
+                            action: _("Move focus between main and auxiliary toolbars")
+                        },
+                        {
+                            keys: platformKeys("Enter", "Enter"),
+                            action: _("Activate the focused toolbar button")
+                        },
+                        {
+                            keys: platformKeys("Esc", "Esc"),
+                            action: _("Exit toolbar keyboard navigation")
+                        }
+                    ]
+                },
+                {
+                    title: _("Widget Windows"),
+                    items: [
+                        {
+                            keys: platformKeys("Esc", "Esc"),
+                            action: _("Close the focused widget window")
+                        },
+                        {
+                            keys: platformKeys("Ctrl + Shift + M", "Command + Shift + M"),
+                            action: _("Maximize or restore the focused widget window")
+                        }
+                    ]
+                },
+                {
+                    title: _("Help and Pitch Slider"),
+                    items: [
+                        {
+                            keys: platformKeys(
+                                _("Arrow Left / Arrow Right"),
+                                _("Arrow Left / Arrow Right")
+                            ),
+                            action: _("Move between help pages when Help is open")
+                        },
+                        {
+                            keys: platformKeys(_("Arrow keys"), _("Arrow keys")),
+                            action: _("Adjust pitch by semitone when Pitch Slider is open")
+                        }
+                    ]
+                }
+            ];
+
+            const widgetWindow = window.widgetWindows.windowFor(
+                this,
+                _("Keyboard shortcuts"),
+                "keyboard-shortcuts",
+                true
+            );
+            widgetWindow.clear();
+            widgetWindow.show();
+
+            const widgetBody = widgetWindow.getWidgetBody();
+            widgetBody.className = "wfbWidget keyboard-shortcuts-widget";
+            widgetBody.style.padding = "0";
+            widgetBody.style.display = "block";
+            widgetBody.style.height = "min(72vh, 680px)";
+            widgetBody.style.width = "min(68vw, 760px)";
+            widgetBody.style.maxWidth = "100%";
+            widgetBody.style.overflow = "hidden";
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "keyboard-shortcuts-panel";
+
+            const intro = document.createElement("div");
+            intro.className = "keyboard-shortcuts-hero";
+            intro.innerHTML =
+                `<div class="keyboard-shortcuts-hero-title">${_("Keyboard shortcuts")}</div>` +
+                `<div class="keyboard-shortcuts-hero-copy">${_(
+                    "Shortcuts are context-sensitive. Some only work when a related panel, widget, or mode is active. Windows/Linux and Mac equivalents are shown together."
+                )}</div>`;
+            wrapper.appendChild(intro);
+
+            shortcutSections.forEach(section => {
+                const sectionCard = document.createElement("section");
+                sectionCard.className = "keyboard-shortcuts-section";
+
+                const heading = document.createElement("div");
+                heading.textContent = section.title;
+                heading.className = "keyboard-shortcuts-section-title";
+                sectionCard.appendChild(heading);
+
+                section.items.forEach(item => {
+                    const row = document.createElement("div");
+                    row.className = "keyboard-shortcuts-row";
+
+                    const key = document.createElement("div");
+                    key.textContent = item.keys;
+                    key.className = "keyboard-shortcuts-key";
+
+                    const action = document.createElement("div");
+                    action.textContent = item.action;
+                    action.className = "keyboard-shortcuts-action";
+
+                    row.appendChild(key);
+                    row.appendChild(action);
+                    sectionCard.appendChild(row);
+                });
+
+                wrapper.appendChild(sectionCard);
+            });
+
+            widgetBody.appendChild(wrapper);
+            widgetWindow.sendToCenter();
+            requestAnimationFrame(() => widgetWindow.sendToCenter());
         };
 
         /*
@@ -7859,7 +8107,7 @@ class Activity {
             );
             this.toolbar.renderPlanetIcon(this.planet, doOpenSamples);
             this.toolbar.renderMenuIcon(showHideAuxMenu);
-            this.toolbar.renderHelpIcon(showHelp);
+            this.toolbar.renderHelpIcon(showHelp, showKeyboardShortcuts);
             this.toolbar.renderModeSelectIcon(
                 doSwitchMode,
                 () => doRecordButton(this),

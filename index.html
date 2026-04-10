@@ -574,10 +574,11 @@
                                 <li>
                                     <a
                                         id="helpIcon"
-                                        class="tooltipped"
+                                        class="tooltipped dropdown-trigger"
                                         data-position="bottom"
                                         role="button"
                                         tabindex="0"
+                                        data-activates="helpdropdown"
                                     >
                                         <i class="material-icons md-48">help</i>
                                     </a>
@@ -829,6 +830,11 @@
                                 >Record canvas only</a
                             >
                         </li>
+                    </ul>
+
+                    <ul id="helpdropdown" class="dropdown-content helpdropdown-menu">
+                        <li><a id="helpGuideItem" role="button" tabindex="0"></a></li>
+                        <li><a id="shortcutsGuideItem" role="button" tabindex="0"></a></li>
                     </ul>
 
                     <ul id="languagedropdown" class="dropdown-content">
