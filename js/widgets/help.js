@@ -381,7 +381,7 @@ class HelpWidget {
         if (HELPCONTENT[page].length > 3) {
             const link = HELPCONTENT[page][3];
             // console.debug(page + " " + link);
-            body += `<p><a href="${link}" target="_blank">${HELPCONTENT[page][4]}</a></p>`;
+            body += `<p><a href="${link}" target="_blank" rel="noopener noreferrer">${HELPCONTENT[page][4]}</a></p>`;
         }
 
         if ([_("Congratulations.")].includes(HELPCONTENT[page][0])) {
