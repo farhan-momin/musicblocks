@@ -343,6 +343,136 @@ class Block {
         // Mouse position in events
         this.original = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
+
+        // Track temporary drag scaling used when hovering over trash.
+        this._trashHoverScaled = false;
+        this._trashHoverGroupState = null;
+        this._dragPointerDown = false;
+    }
+
+    /**
+     * Animate the current drag group scale while hovering over trash.
+     * @param {boolean} isOverTrash
+     * @param {number} dx
+     * @param {number} dy
+     * @param {boolean} immediate
+     * @returns {void}
+     */
+    _setDragGroupTrashHoverScale(isOverTrash, dx = 0, dy = 0, immediate = false) {
+        const thisBlock = this.blockIndex;
+        const duration = immediate ? 0 : 140;
+        const shrinkRatio = 0.5;
+        const epsilon = 0.001;
+
+        const getGroupOrigin = positions => {
+            let originX = Infinity;
+            let originY = Infinity;
+            positions.forEach(pos => {
+                originX = Math.min(originX, pos.x);
+                originY = Math.min(originY, pos.y);
+            });
+            return { x: originX, y: originY };
+        };
+
+        // Initialize only when first entering trash; otherwise normal dragging should stay untouched.
+        if (isOverTrash && !this._trashHoverGroupState) {
+            const activeDragGroup =
+                this.blocks.dragGroup && this.blocks.dragGroup.length > 0
+                    ? [...this.blocks.dragGroup]
+                    : [thisBlock];
+            const blockStates = [];
+            activeDragGroup.forEach(blockId => {
+                const block = this.blocks.blockList[blockId];
+                if (!block || !block.container) {
+                    return;
+                }
+                blockStates.push({
+                    id: blockId,
+                    x: block.container.x,
+                    y: block.container.y,
+                    scaleX: block.container.scaleX ?? 1,
+                    scaleY: block.container.scaleY ?? 1
+                });
+            });
+
+            if (blockStates.length === 0) {
+                return;
+            }
+
+            const origin = getGroupOrigin(blockStates);
+            this._trashHoverGroupState = {
+                ratio: shrinkRatio,
+                originX: origin.x,
+                originY: origin.y,
+                blocks: blockStates
+            };
+        }
+
+        // Keep logical (unscaled) baseline aligned with user dragging while hover-state exists.
+        if (this._trashHoverGroupState) {
+            this._trashHoverGroupState.originX += dx;
+            this._trashHoverGroupState.originY += dy;
+            this._trashHoverGroupState.blocks.forEach(entry => {
+                entry.x += dx;
+                entry.y += dy;
+            });
+        }
+
+        if (!this._trashHoverGroupState) {
+            return;
+        }
+
+        const state = this._trashHoverGroupState;
+        state.ratio = shrinkRatio;
+        const blocksToApply = state.blocks;
+
+        for (let b = 0; b < blocksToApply.length; b++) {
+            const item = blocksToApply[b];
+            const blockId = item.id;
+            const block = this.blocks.blockList[blockId];
+            if (!block || !block.container) {
+                continue;
+            }
+
+            let targetScaleX;
+            let targetScaleY;
+            let targetX = block.container.x;
+            let targetY = block.container.y;
+
+            if (isOverTrash) {
+                targetScaleX = item.scaleX * state.ratio;
+                targetScaleY = item.scaleY * state.ratio;
+                targetX = state.originX + (item.x - state.originX) * state.ratio;
+                targetY = state.originY + (item.y - state.originY) * state.ratio;
+            } else {
+                targetScaleX = item.scaleX;
+                targetScaleY = item.scaleY;
+                targetX = item.x;
+                targetY = item.y;
+            }
+
+            if (
+                block._trashHoverScaled === isOverTrash &&
+                Math.abs((block.container.scaleX ?? 1) - targetScaleX) < epsilon &&
+                Math.abs((block.container.scaleY ?? 1) - targetScaleY) < epsilon &&
+                Math.abs(block.container.x - targetX) < epsilon &&
+                Math.abs(block.container.y - targetY) < epsilon
+            ) {
+                continue;
+            }
+
+            block._trashHoverScaled = isOverTrash;
+            createjs.Tween.get(block.container, { override: true }).to(
+                { x: targetX, y: targetY, scaleX: targetScaleX, scaleY: targetScaleY },
+                duration
+            );
+        }
+
+        if (!isOverTrash && immediate) {
+            this._trashHoverGroupState = null;
+        }
+
+        this.activity.refreshCanvas();
     }
 
     /**
@@ -3012,6 +3142,10 @@ class Block {
         this.container.on("mousedown", event => {
             docById("contextWheelDiv").style.display = "none";
 
+            // Reset any stale hover-scaling state from prior drags.
+            this._trashHoverGroupState = null;
+            this._dragPointerDown = true;
+
             // Track time for detecting long pause...
             that.blocks.mouseDownTime = new Date().getTime();
 
@@ -3043,11 +3177,14 @@ class Block {
             that.blocks.raiseStackToTop(thisBlock);
 
             // And possibly the collapse button.
-            if (that.collapseContainer !== null) {
-                that.activity.blocksContainer.setChildIndex(
-                    that.collapseContainer,
-                    that.activity.blocksContainer.children.length - 1
-                );
+            if (that.collapseContainer != null) {
+                // Ensure the blocksContainer still exisits.
+                if (that.activity.blocksContainer != null) {
+                    that.activity.blocksContainer.setChildIndex(
+                        that.collapseContainer,
+                        that.activity.blocksContainer.children.length - 1
+                    );
+                }
             }
 
             moved = false;
@@ -3073,7 +3210,7 @@ class Block {
             // mouse move event.
             _dragHasRest2 = false;
             let checkBlock = that.blocks.blockList[that.connections[1]];
-            while (checkBlock !== null) {
+            while (checkBlock != null) {
                 if (checkBlock?.name === "rest2") {
                     _dragHasRest2 = true;
                     break;
@@ -3179,17 +3316,15 @@ class Block {
             that.blocks.moveBlockRelativeBatched(thisBlock, dx, dy);
 
             // If we are over the trash, warn the user.
-            if (
-                that.activity.trashcan.overTrashcan(
-                    event.stageX / that.activity.getStageScale(),
-                    event.stageY / that.activity.getStageScale()
-                )
-            ) {
+            const overTrash = that.activity.trashcan.overTrashcan(
+                event.stageX / that.activity.getStageScale(),
+                event.stageY / that.activity.getStageScale()
+            );
+            if (overTrash) {
                 that.activity.trashcan.startHighlightAnimation();
             } else {
                 that.activity.trashcan.stopHighlightAnimation();
             }
-
             if (that.isValueBlock() && that.name !== "media") {
                 // Ensure text is on top
                 that.container.setChildIndex(that.text, that.container.children.length - 1);
@@ -3218,8 +3353,11 @@ class Block {
                 }
             }
 
+            that._setDragGroupTrashHoverScale(overTrash, dx, dy);
+
             // Single deferred checkBounds + single canvas refresh per frame
             that.blocks.scheduleCheckBounds();
+            that._setDragGroupTrashHoverScale(overTrash, dx, dy);
             that.activity.refreshCanvas();
         });
 
@@ -3231,8 +3369,18 @@ class Block {
          * @param {Event} event - The mouseout event object.
          */
         this.container.on("mouseout", event => {
+            // Ignore transient mouseout while actively dragging.
+            if (that._dragPointerDown) {
+                if (that.blocks.longPressTimeout != null) {
+                    clearTimeout(that.blocks.longPressTimeout);
+                    that.blocks.longPressTimeout = null;
+                }
+                that.blocks.clearLongPress();
+                return;
+            }
+
             if (!that.blocks.getLongPressStatus()) {
-                that._mouseoutCallback(event, moved, haveClick, false);
+                that._mouseoutCallback(event, moved, haveClick, false, false);
             } else {
                 clearTimeout(that.blocks.longPressTimeout);
                 that.blocks.longPressTimeout = null;
@@ -3259,8 +3407,10 @@ class Block {
          * @param {Event} event - The pressup event object.
          */
         this.container.on("pressup", event => {
+            that._dragPointerDown = false;
+
             if (!that.blocks.getLongPressStatus()) {
-                that._mouseoutCallback(event, moved, haveClick, false);
+                that._mouseoutCallback(event, moved, haveClick, false, true);
             } else {
                 clearTimeout(that.blocks.longPressTimeout);
                 that.blocks.longPressTimeout = null;
@@ -3286,13 +3436,19 @@ class Block {
      * @param {boolean} moved - Indicates if the cursor moved.
      * @param {boolean} haveClick - Indicates if a click event occurred.
      * @param {boolean} hideDOM - Indicates whether to hide DOM elements.
+     * @param {boolean} dragEnded - Indicates whether this callback is from drag release.
      * Sets cursor style to default.
      * @returns {void}
      */
-    _mouseoutCallback(event, moved, haveClick, hideDOM) {
+    _mouseoutCallback(event, moved, haveClick, hideDOM, dragEnded = false) {
         const thisBlock = this.blockIndex;
         if (!this.activity.logo.runningLilypond) {
             document.body.style.cursor = "default";
+        }
+
+        // Restore drag scaling only when drag interaction actually ends.
+        if (dragEnded) {
+            this._setDragGroupTrashHoverScale(false, 0, 0, true);
         }
 
         // Always hide the trash when there is no block selected.
@@ -3306,7 +3462,7 @@ class Block {
             this.blocks.clearLongPress();
         }
 
-        if (moved) {
+        if (moved && dragEnded) {
             // Check if block is in the trash.
             if (
                 this.activity.trashcan.overTrashcan(
