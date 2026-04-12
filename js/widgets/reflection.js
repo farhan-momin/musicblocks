@@ -65,6 +65,8 @@ class ReflectionMatrix {
          * @type {string}
          */
         this.code = "";
+
+        this.startChatTypingTimeout = null;
     }
 
     sanitizeLinks(html) {
@@ -100,6 +102,10 @@ class ReflectionMatrix {
         widgetWindow.onclose = () => {
             this.isOpen = false;
             this.activity.isInputON = false;
+            if (this.startChatTypingTimeout) {
+                clearTimeout(this.startChatTypingTimeout);
+                this.startChatTypingTimeout = null;
+            }
             if (this.dotsInterval) {
                 clearInterval(this.dotsInterval);
             }
@@ -242,6 +248,11 @@ class ReflectionMatrix {
      * @returns {void}
      */
     hideTypingIndicator() {
+        if (this.startChatTypingTimeout) {
+            clearTimeout(this.startChatTypingTimeout);
+            this.startChatTypingTimeout = null;
+        }
+
         if (this.typingDiv) {
             clearInterval(this.dotsInterval);
             this.typingDiv.remove();
@@ -283,8 +294,11 @@ class ReflectionMatrix {
         if (this.triggerFirst === true) return;
 
         this.triggerFirst = true;
-        setTimeout(() => {
-            this.showTypingIndicator("Reading code");
+        this.startChatTypingTimeout = setTimeout(() => {
+            this.startChatTypingTimeout = null;
+            if (this.isOpen) {
+                this.showTypingIndicator("Reading code");
+            }
         }, 1000);
 
         const code = await this.activity.prepareExport();
