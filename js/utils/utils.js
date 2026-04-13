@@ -801,8 +801,9 @@ const processPluginData = (activity, pluginData, pluginSource) => {
     let obj;
     try {
         obj = JSON.parse(pluginData);
-    } catch (e) {
-        console.warn("Skipped loading malformed plugin data:", e.message);
+    } catch (error) {
+        console.error(`PluginProcessor: Failed to parse plugin data from source "${pluginSource}":`, error);
+        console.debug("Malformed plugin data:", pluginData);
         return null;
     }
     // Create a palette entry.
