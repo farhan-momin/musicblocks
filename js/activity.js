@@ -1945,20 +1945,20 @@ class Activity {
                         flag = 0;
                         recording();
                         doRecordButton();
-                        return; // Exit without saving the file
+                        return;
                     }
-                    const downloadLink = document.createElement("a");
-                    downloadLink.href = URL.createObjectURL(blob);
-                    downloadLink.download = `${filename}.webm`;
-                    document.body.appendChild(downloadLink);
-                    downloadLink.click();
-                    URL.revokeObjectURL(blob);
-                    document.body.removeChild(downloadLink);
+
+                    const blob = new Blob(recordedChunks, { type: "video/webm" });
+                    const url = URL.createObjectURL(blob);
+
+                    activity.save.download("webm", url, filename);
+
+                    recordedChunks = [];
                     flag = 0;
+
                     // Allow multiple recordings
                     recording();
                     doRecordButton();
-                    that.textMsg(_("Recording stopped. File saved."));
                 };
                 // Prevent zero-byte files
                 if (!recordedChunks || recordedChunks.length === 0) {
@@ -1989,6 +1989,27 @@ class Activity {
                 }
                 mediaRecorder = null;
                 // Prompt to save file
+                const filename = window.prompt(_("Enter file name"));
+                if (filename === null || filename.trim() === "") {
+                    alert(_("File save canceled"));
+                    flag = 0;
+                    recording();
+                    doRecordButton();
+                    return; // Exit without saving the file
+                }
+                const downloadLink = document.createElement("a");
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLink.download = `${filename}.webm`;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                that.textMsg(_("Saved! Check your Downloads folder."));
+                URL.revokeObjectURL(blob);
+                document.body.removeChild(downloadLink);
+                flag = 0;
+                // Allow multiple recordings
+                recording();
+                doRecordButton();
+                that.textMsg(_("Recording stopped. File saved."));
                 if (window.MBDialog && typeof window.MBDialog.prompt === "function") {
                     window.MBDialog.prompt({
                         title: _("Save recording"),
@@ -2041,7 +2062,15 @@ class Activity {
                 };
 
                 mediaRecorder.onstop = function () {
-                    saveFile(recordedChunks);
+                    //saveFile(recordedChunks);
+                    //recordedChunks = [];
+                    //flag = 0;
+                    //recInside.setAttribute("fill", "#ffffff");
+                    const blob = new Blob(recordedChunks, { type: "video/webm" });
+                    const url = URL.createObjectURL(blob);
+
+                    activity.save.download("webm", url, null);
+
                     recordedChunks = [];
                     flag = 0;
                     recInside.setAttribute("fill", "#ffffff");
