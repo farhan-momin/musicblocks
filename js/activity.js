@@ -3144,7 +3144,7 @@ class Activity {
             this.addEventListener(window, "mousedown", this._resetIdleTimer);
             this.addEventListener(window, "keydown", this._resetIdleTimer);
             this.addEventListener(window, "touchstart", this._resetIdleTimer);
-            this.addEventListener(window, "wheel", this._resetIdleTimer);
+            this.addEventListener(window, "wheel", this._resetIdleTimer, { passive: true });
 
             // Periodic check for idle state - store interval ID for cleanup
             this._idleWatcherInterval = setInterval(() => {
