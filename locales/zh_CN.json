@@ -731,7 +731,7 @@
   "x": "X座標",
   "y": "Y座標",
   "run block": "运行块",
-  "The Dock block block connections two blocks.": "Dock block 块连接两个块。",
+  "The Dock block connects two blocks.": "Dock block 块连接两个块。",
   "connect blocks": "连接块",
   "target block": "目标块",
   "connection number": "连接编号",

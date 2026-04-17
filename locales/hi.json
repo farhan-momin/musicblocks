@@ -1071,7 +1071,7 @@
   "block number": "ब्लॉक संख्या",
   "The Run block block runs a block. It accepts two types of arguments: block number or block name.": "रन ब्लॉक ब्लॉक एक ब्लॉक चलाता है। यह दो प्रकार के तर्कों को स्वीकार करता है: ब्लॉक संख्या या ब्लॉक नाम।",
   "run block": "रन ब्लॉक",
-  "The Dock block block connections two blocks.": "डॉक ब्लॉक ब्लॉक दो ब्लॉकों को जोड़ता है।",
+  "The Dock block connects two blocks.": "डॉक ब्लॉक ब्लॉक दो ब्लॉकों को जोड़ता है।",
   "connect blocks": "ब्लॉकों को जोड़ें",
   "target block": "लक्ष्य ब्लॉक",
   "connection number": "कनेक्शन संख्या",

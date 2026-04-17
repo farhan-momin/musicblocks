@@ -5791,7 +5791,7 @@ msgid "run block"
 msgstr "रन ब्लॉक"
 
 #: js/blocks/ProgramBlocks.js:1023
-msgid "The Dock block block connections two blocks."
+msgid "The Dock block connects two blocks."
 msgstr "डॉक ब्लॉक ब्लॉक दो ब्लॉकों को जोड़ता है।"
 
 #: js/blocks/ProgramBlocks.js:1034

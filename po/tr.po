@@ -6232,7 +6232,7 @@ msgid "run block"
 msgstr "blok çalıştır"
 
 #: js/blocks/ProgramBlocks.js:1025
-msgid "The Dock block block connections two blocks."
+msgid "The Dock block connects two blocks."
 msgstr "rıhtım bloğu blok bağlantıları iki blok"
 
 #: js/blocks/ProgramBlocks.js:1036

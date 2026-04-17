@@ -3599,7 +3599,7 @@ msgid "run block"
 msgstr "رن بلاک"
 
 #: js/blocks/ProgramBlocks.js:1025
-msgid "The Dock block block connections two blocks."
+msgid "The Dock block connects two blocks."
 msgstr "ڈاک بلاک بلاک کنکشن دو بلاکس۔"
 
 #. TRANS: We can connect a block to another block.

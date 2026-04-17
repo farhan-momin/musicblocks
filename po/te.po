@@ -4122,7 +4122,7 @@ msgid "run block"
 msgstr "ఈ బ్లాక్ను తొలగించండి"
 
 #: js/blocks/ProgramBlocks.js:1025
-msgid "The Dock block block connections two blocks."
+msgid "The Dock block connects two blocks."
 msgstr "డాక్ బ్లాక్ రెండు బ్లాక్‌ల అనుసంధానాలను చేస్తుంది."
 
 #: js/blocks/ProgramBlocks.js:1036

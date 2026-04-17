@@ -732,7 +732,7 @@
   "x": "x",
   "y": "y",
   "run block": "ఈ బ్లాక్ను తొలగించండి",
-  "The Dock block block connections two blocks.": "డాక్ బ్లాక్ రెండు బ్లాక్‌ల అనుసంధానాలను చేస్తుంది.",
+  "The Dock block connects two blocks.": "డాక్ బ్లాక్ రెండు బ్లాక్‌ల అనుసంధానాలను చేస్తుంది.",
   "connect blocks": "ఒక బ్లాక్ను మరియునా ఒక బ్లాక్కు కలిగించండి.",
   "target block": "లక్ష్య బ్లాక్",
   "connection number": "కనెక్షన్ సంఖ్య",

@@ -1011,11 +1011,7 @@ function setupProgramBlocks(activity) {
         constructor() {
             super("dockblock");
             this.setPalette("program", activity);
-            this.setHelpString([
-                _("The Dock block block connections two blocks."),
-                "documentation",
-                ""
-            ]);
+            this.setHelpString([_("The Dock block connects two blocks."), "documentation", ""]);
 
             this.formBlock({
                 /**

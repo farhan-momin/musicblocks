@@ -4118,7 +4118,7 @@ msgid "run block"
 msgstr "ब्लॉक चालवा"
 
 #: js/blocks/ProgramBlocks.js:1025
-msgid "The Dock block block connections two blocks."
+msgid "The Dock block connects two blocks."
 msgstr "Dock block दोन ब्लॉक्स जोडतो."
 
 #: js/blocks/ProgramBlocks.js:1036

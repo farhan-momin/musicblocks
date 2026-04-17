@@ -4823,7 +4823,7 @@ msgstr ""
 
 #: js/blocks/ProgramBlocks.js:1025
 #. TRANS: El bloque connectar conecta dos bloques
-msgid "The Dock block block connections two blocks."
+msgid "The Dock block connects two blocks."
 msgstr ""
 
 #: js/blocks/ProgramBlocks.js:1036

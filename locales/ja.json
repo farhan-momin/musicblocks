@@ -3711,9 +3711,9 @@
     "kanji": "ネズミを同期させる",
     "kana": "ネズミを どうき させる"
   },
-  "The Dock block block connections two blocks.": {
+  "The Dock block connects two blocks.": {
     "kanji": "Dock blockブロックは2つのブロックを接続します。",
-    "kana": "The Dock block block connections two blocks."
+    "kana": "The Dock block connects two blocks."
   },
   "The Hide blocks block hides the blocks.": {
     "kanji": "ハイド・ブロックスブロックはブロックを非表示にします。",
