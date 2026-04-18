@@ -2011,6 +2011,9 @@ function Synth() {
         setNote,
         future
     ) => {
+        // Capture the current instrument epoch to detect disposal during async operations
+        const epoch = this._instrumentEpoch;
+
         // If audio is not running, try to start it
         if (Tone.context.state !== "running") {
             Tone.start().catch(function (e) {
@@ -2101,7 +2104,18 @@ function Synth() {
                 console.warn("Synth not initialized, creating default synth");
                 this.createDefaultSynth(turtle);
                 await this.loadSynth(turtle, instrumentName);
+
+                // Check if instruments were disposed while we were waiting
+                if (this._instrumentEpoch !== epoch) {
+                    return; // Exit gracefully - instruments were disposed
+                }
+
                 tempSynth = instruments[turtle][instrumentName];
+            }
+
+            // Final validation: ensure synth still exists and is valid
+            if (!tempSynth || !instruments[turtle] || !instruments[turtle][instrumentName]) {
+                return; // Exit gracefully - synth is no longer available
             }
 
             switch (flag) {
