@@ -2355,9 +2355,9 @@
     "kanji": "音階的",
     "kana": "おんかいてき"
   },
-  "The Set-heap entry block sets a value in he heap at the specified location.": {
+  "The Set-heap entry block sets a value in the heap at the specified location.": {
     "kanji": "Set-heapエントリーブロックは指定された位置のヒープに値を設定します。",
-    "kana": "The Set-heap entry block sets a value in he heap at the specified location."
+    "kana": "The Set-heap entry block sets a value in the heap at the specified location."
   },
   "heap": {
     "kanji": "ヒープ",

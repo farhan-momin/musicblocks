@@ -3136,7 +3136,7 @@ msgid "Maximum heap size is 1000."
 msgstr "زیادہ سے زیادہ ڈھیر کا سائز 1000 ہے۔"
 
 #: js/blocks/HeapBlocks.js:523
-msgid "The Set-heap entry block sets a value in he heap at the specified location."
+msgid "The Set-heap entry block sets a value in the heap at the specified location."
 msgstr "سیٹ ہیپ انٹری بلاک مخصوص جگہ پر ڈھیر میں ایک قیمت طے کرتا ہے۔"
 
 #. TRANS: load the heap from a JSON encoding

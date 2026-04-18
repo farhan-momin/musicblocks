@@ -625,7 +625,7 @@
   "index heap": "nayrïri qutu",
   "Index must be > 0.": "Wakichata > 0 chimputa jilañapawa",
   "Maximum heap size is 1000.": "El tamaño máximo de pilas es 1000.",
-  "The Set-heap entry block sets a value in he heap at the specified location.": "The Set-heap entry block sets a value in he heap at the specified location.",
+  "The Set-heap entry block sets a value in the heap at the specified location.": "The Set-heap entry block sets a value in the heap at the specified location.",
   "set heap": "Qutu kutichiy",
   "index": "wakichatanaka",
   "The Pop block removes the value at the top of the heap.": "El bloque Pop elimina el valor en la parte superior del pila.",

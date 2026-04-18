@@ -625,7 +625,7 @@
   "index heap": "इंडेक्स हीप",
   "Index must be > 0.": "इंडेक्स > 0 असावा.",
   "Maximum heap size is 1000.": "कमाल हीप आकार 1000 आहे.",
-  "The Set-heap entry block sets a value in he heap at the specified location.": "सेट-हीप एंट्री ब्लॉक दिलेल्या स्थानावर हीपमध्ये मूल्य सेट करतो.",
+  "The Set-heap entry block sets a value in the heap at the specified location.": "सेट-हीप एंट्री ब्लॉक दिलेल्या स्थानावर हीपमध्ये मूल्य सेट करतो.",
   "set heap": "सेट हीप",
   "index": "इंडेक्स",
   "The Pop block removes the value at the top of the heap.": "पॉप ब्लॉक हीपच्या शीर्षस्थानील मूल्य काढून टाकतो.",

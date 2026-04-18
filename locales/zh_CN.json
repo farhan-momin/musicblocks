@@ -625,7 +625,7 @@
   "index heap": "堆索引",
   "Index must be > 0.": "索引必须大于0。",
   "Maximum heap size is 1000.": "堆的最大大小为1000。",
-  "The Set-heap entry block sets a value in he heap at the specified location.": "Set-heap entry 块在指定位置设置堆中的值。",
+  "The Set-heap entry block sets a value in the heap at the specified location.": "Set-heap entry 块在指定位置设置堆中的值。",
   "set heap": "设置堆",
   "index": "索引",
   "The Pop block removes the value at the top of the heap.": "Pop 块移除堆顶的值。",

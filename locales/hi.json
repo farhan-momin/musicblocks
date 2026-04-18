@@ -834,7 +834,7 @@
   "reverse heap": "हीप उलटें",
   "The Index-heap block returns a value in the heap at a specified location.": "इंडेक्स-हीप ब्लॉक निर्दिष्ट स्थान पर हीप में एक मूल्य लौटाता है।",
   "index heap": "हीप में स्थिति में से मूल्य प्राप्त करें",
-  "The Set-heap entry block sets a value in he heap at the specified location.": "सेट-हीप एंट्री ब्लॉक निर्दिष्ट स्थान पर हीप में मूल्य सेट करता है।",
+  "The Set-heap entry block sets a value in the heap at the specified location.": "सेट-हीप एंट्री ब्लॉक निर्दिष्ट स्थान पर हीप में मूल्य सेट करता है।",
   "set heap": "ढेर लगाओ",
   "The Pop block removes the value at the top of the heap.": "पॉप ब्लॉक हीप के शीर्ष पर मूल्य को हटा देता है।",
   "pop": "पॉप",
