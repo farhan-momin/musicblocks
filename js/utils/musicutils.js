@@ -6516,6 +6516,12 @@ if (typeof module !== "undefined" && module.exports) {
         NOTESTEP,
         MUSICALMODES,
         SHARP,
-        FLAT
+        FLAT,
+        NOTENAMES,
+        SOLFEGENAMES1,
+        ALLNOTENAMES,
+        NOTENAMES1,
+        PITCHES1,
+        PITCHES3
     };
 }
