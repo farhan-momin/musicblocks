@@ -1124,7 +1124,7 @@ class Logo {
         }
 
         this.synth.stop();
-        if (this.synth.recorder && this.synth.recorder.state == "recording")
+        if (this.synth.recorder && this.synth.recorder.state === "recording")
             this.synth.recorder.stop();
 
         // Dispose all Tone.js instruments to free decoded AudioBuffers
@@ -1225,11 +1225,16 @@ class Logo {
         }
 
         this._prematureRestart = this._alreadyRunning;
+
         if (this._alreadyRunning && this._runningBlock !== null) {
             this._ignoringBlock = this._runningBlock;
         } else {
             this._ignoringBlock = null;
         }
+
+        // NOW reset the flags for the new run
+        this._alreadyRunning = false;
+        this._prematureRestart = false;
 
         if (this._lastNoteTimeout != null) {
             clearTimeout(this._lastNoteTimeout);

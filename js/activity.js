@@ -1722,6 +1722,11 @@ class Activity {
             this.blocks.activeBlock = null;
             hideDOMLabel();
 
+            // If music is currently playing, stop it first
+            if (this.turtles.running()) {
+                this.logo.doStopTurtles();
+            }
+
             const currentDelay = this.logo.turtleDelay;
             this.logo.turtleDelay = 0;
             if (this.logo?.synth?.resume) {
@@ -1747,18 +1752,29 @@ class Activity {
                 }
 
                 this.logo.runLogoCommands(null, env);
+                const stopBtn = document.getElementById("stop");
+                if (stopBtn) {
+                    stopBtn.style.display = "inline-block";
+                    stopBtn.style.color = window.platformColor.stopIconcolor;
+                }
             } else {
                 if (currentDelay !== 0) {
                     // Keep playing at full speed.
                     this.logo.step();
                 } else {
                     // Stop and restart.
-                    document.getElementById("stop").style.color = "white";
+                    const stopBtn = document.getElementById("stop");
+                    if (stopBtn) {
+                        stopBtn.style.color = "white";
+                    }
                     this.logo.doStopTurtles();
 
                     const that = this;
                     setTimeout(() => {
-                        document.getElementById("stop").style.color = "#ea174c";
+                        const stopBtnDelay = document.getElementById("stop");
+                        if (stopBtnDelay) {
+                            stopBtnDelay.style.color = window.platformColor.stopIconcolor;
+                        }
                         that.logo.runLogoCommands(null, env);
                     }, 500);
                 }
@@ -2250,6 +2266,7 @@ class Activity {
             }
 
             this.logo.doStopTurtles();
+            document.getElementById("stop").style.display = "none";
 
             const widgetTitle = document.getElementsByClassName("wftTitle");
             for (let i = 0; i < widgetTitle.length; i++) {
@@ -8003,6 +8020,12 @@ class Activity {
             // Guard against double initialization
             if (this._initialized) return;
             this._initialized = true;
+
+            // Hide stop button on startup
+            const stopBtn = document.getElementById("stop");
+            if (stopBtn) {
+                stopBtn.style.display = "none";
+            }
 
             // Batch DOM reads before any writes to avoid forced synchronous layout
             this._perfMark("activity.init.start");
