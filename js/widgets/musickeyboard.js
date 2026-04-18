@@ -685,7 +685,6 @@ function MusicKeyboard(activity) {
 
             selectedNotes = [];
             docById("wheelDivptm").style.display = "none";
-            docById("wheelDivptm").style.display = "none";
             if (this._menuWheel) this._menuWheel.removeWheel();
             if (this._pitchWheel) this._pitchWheel.removeWheel();
             if (this._tabsWheel) this._tabsWheel.removeWheel();
