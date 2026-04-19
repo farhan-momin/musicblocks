@@ -9010,19 +9010,11 @@ class Activity {
                 this.palettes.hide();
             }
 
-            if (typeof this.palettes.clear !== "function") {
-                console.warn("Palettes clear method not available");
-                // Fallback clear implementation
-                this.palettes.dict = {};
-                this.palettes.visible = false;
-                this.palettes.activePalette = null;
-                this.palettes.paletteObject = null;
-            } else {
-                this.palettes.clear();
-            }
+            this.palettes.reinitialize(this.palettes);
 
-            // Reinitialize palettes
-            initPalettes(this.palettes);
+            // Increase palette element style.top value for correct alignment
+            const element = docById("palette");
+            element.style.top = `${60 + this.palettes.top}px`;
 
             // Reinitialize blocks
             if (this.blocks) {

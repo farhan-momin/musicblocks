@@ -981,87 +981,34 @@ class Palettes {
         docById("palette").style.visibility = "visible";
     }
 
-    clear() {
-        try {
-            // First hide all palettes
-            for (const name in this.dict) {
-                if (Object.prototype.hasOwnProperty.call(this.dict, name)) {
-                    const palette = this.dict[name];
-                    if (palette && typeof palette.hideMenu === "function") {
-                        palette.hideMenu();
-                    }
+    reinitialize(palettes) {
+        // First hide all palettes
+        for (const name in this.dict) {
+            if (Object.prototype.hasOwnProperty.call(this.dict, name)) {
+                const palette = this.dict[name];
+                if (palette && typeof palette.hideMenu === "function") {
+                    palette.hideMenu();
                 }
             }
-
-            // Remove the palette DOM element if it exists
-            const paletteElement = docById("palette");
-            if (paletteElement) {
-                paletteElement.parentNode.removeChild(paletteElement);
-            }
-
-            // Clear the dictionary and reset state
-            this.dict = {};
-            this.visible = false;
-            this.activePalette = null;
-            this.paletteObject = null;
-
-            // Recreate the palette using the original initialization code
-            const element = document.createElement("div");
-            element.id = "palette";
-            element.setAttribute("class", "disable_highlighting");
-            element.classList.add("flex-palette");
-            element.setAttribute(
-                "style",
-                `position: fixed; z-index: 1000; left: 0px; top: ${
-                    60 + this.top
-                }px; overflow-y: auto;`
-            );
-            element.innerHTML = `<div style="height:fit-content">
-                    <table width="${1.5 * this.cellSize}" bgcolor="white">
-                        <thead>
-                            <tr></tr>
-                        </thead>
-                    </table>
-                    <table width="${4.5 * this.cellSize}" bgcolor="white">
-                        <thead>
-                            <tr>
-                                <td style= "width:28px"></td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>`;
-            element.childNodes[0].style.border = `1px solid ${platformColor.selectorSelected}`;
-            document.body.appendChild(element);
-
-            const toggleBtn = document.createElement("div");
-            toggleBtn.innerHTML = "◀";
-            toggleBtn.id = "paletteToggle";
-
-            toggleBtn.style.position = "absolute";
-            toggleBtn.style.top = "12px";
-            toggleBtn.style.right = "-18px";
-            toggleBtn.style.width = "22px";
-            toggleBtn.style.height = "40px";
-            toggleBtn.style.display = "flex";
-            toggleBtn.style.alignItems = "center";
-            toggleBtn.style.justifyContent = "center";
-            toggleBtn.style.cursor = "pointer";
-            toggleBtn.style.background = platformColor.selectorSelected;
-            toggleBtn.style.color = "white";
-
-            toggleBtn.style.borderRadius = "0 6px 6px 0";
-            toggleBtn.style.boxShadow = "0 2px 4px rgba(0,0,0,0.15)";
-            toggleBtn.style.fontWeight = "bold";
-            toggleBtn.style.fontSize = "14px";
-
-            toggleBtn.onclick = () => this.toggleCollapse();
-
-            element.appendChild(toggleBtn);
-        } catch (e) {
-            console.error("Error clearing palettes:", e);
         }
+
+        // Remove the palette DOM element if it exists
+        const paletteElement = docById("palette");
+        if (paletteElement) {
+            paletteElement.parentNode.removeChild(paletteElement);
+        }
+
+        // Clear the dictionary and reset state
+        this.dict = {};
+        this.visible = false;
+        this.activePalette = null;
+        this.paletteObject = null;
+
+        // Initialize palettes
+        initPalettes(palettes);
+
+        // Reset palette collapsed state
+        this.collapsed = false;
     }
 
     setBlocks(blocks) {
