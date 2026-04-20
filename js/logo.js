@@ -1142,6 +1142,10 @@ class Logo {
             this.deps.utils.doStopVideoCam(this.cameraID, this.setCameraID);
         }
 
+        for (const arg in this.evalOnStopList) {
+            this.safePluginExecute(this.evalOnStopList[arg], this);
+        }
+
         this.onStopTurtle();
         this.activity.blocks.bringToTop();
 
