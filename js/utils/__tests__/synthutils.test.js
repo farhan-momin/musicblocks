@@ -1215,8 +1215,8 @@ describe("Utility Functions (logic-only)", () => {
 
     describe("resolveInstrumentName", () => {
         it("should return the internal key for a translated voice name", () => {
-            // In English, _("piano") is "piano".
-            // Our resolveInstrumentName matches against BOTH VOICENAMES[i][0] and [1].
+            // Verifies lookup against both the translated name (VOICENAMES[i][0])
+            // and the internal key (VOICENAMES[i][1]).
             expect(resolveInstrumentName("piano")).toBe("piano");
         });
 
