@@ -4064,7 +4064,7 @@ const numberToPitch = (i, temperament, startPitch, offset, activity) => {
             // store equal temperament notes.
             for (let j = 0; j < 12; j++) {
                 const number = "" + j;
-                interval = TEMPERAMENT["equal"]["interval"][i];
+                interval = TEMPERAMENT["equal"]["interval"][j];
                 TEMPERAMENT[temperament][number] = [
                     Math.pow(2, j / 12),
                     getNoteFromInterval(startPitch, interval)[0],
