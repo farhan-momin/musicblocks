@@ -1,7 +1,7 @@
 /**
  * MusicBlocks v3.4.1
  *
- * @author Music Blocks contributors
+ * @author Sapnil Biswas
  *
  * @copyright 2026 Music Blocks contributors
  *
