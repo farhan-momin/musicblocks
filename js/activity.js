@@ -3424,12 +3424,13 @@ class Activity {
                     obj[0].style.visibility = "visible";
                 }
 
-                this.searchWidget.value = null;
-                this.searchWidget.style.visibility = "visible";
-                this.searchWidget.style.left =
-                    this.palettes.getSearchPos()[0] * this.turtleBlocksScale * 1.5 + "px";
-                this.searchWidget.style.top =
-                    this.palettes.getSearchPos()[1] * this.turtleBlocksScale * 0.95 + "px";
+                if (this.searchWidget) {
+                    this.searchWidget.value = null;
+                    this.searchWidget.style.visibility = "visible";
+                    const searchPos = this.palettes.getSearchPos();
+                    this.searchWidget.style.left = searchPos.x + "px";
+                    this.searchWidget.style.top = searchPos.y + "px";
+                }
 
                 this.searchBlockPosition = [100, 100];
                 this.prepSearchWidget();
@@ -6727,12 +6728,14 @@ class Activity {
                 } else {
                     switch (myBlock.name) {
                         case "start":
-                        case "drum":
+                        case "drum": {
                             // Find the turtle associated with this block.
-                            // eslint-disable-next-line no-case-declarations
+                            const turtleIdx = parseInt(myBlock.value);
                             const turtle =
-                                myBlock.value < this.turtles.getTurtleCount()
-                                    ? this.turtles.getTurtle(myBlock.value)
+                                !isNaN(turtleIdx) &&
+                                turtleIdx >= 0 &&
+                                turtleIdx < this.turtles.getTurtleCount()
+                                    ? this.turtles.getTurtle(turtleIdx)
                                     : null;
                             if (turtle === null || turtle === undefined) {
                                 args = {
@@ -6761,6 +6764,7 @@ class Activity {
                                 };
                             }
                             break;
+                        }
                         case "temperament1":
                             if (this.blocks.customTemperamentDefined) {
                                 // If a define temperament block is
