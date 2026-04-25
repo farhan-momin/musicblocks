@@ -1,5 +1,9 @@
-/* Dark Mode */
+/* Base Colors */
+.planet-page-title {
+    color: #8bc34a; /* Materialize light-green fallback */
+}
 
+/* Dark Mode */
 .dark {
     background-color: #303030;
     color: #e0e0e0;
@@ -63,7 +67,7 @@
 .dark #local-projects .card .card-content {
     color: #bdbdbd;
 }
-s .dark #local-projects .card:hover {
+.dark #local-projects .card:hover {
     background-color: #242424;
     box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.5);
 }
@@ -179,6 +183,10 @@ s .dark #local-projects .card:hover {
 .highcontrast {
     background-color: #000080;
     color: #ffff00;
+}
+
+.highcontrast .planet-page-title {
+    color: #ffffff !important;
 }
 
 .highcontrast .nav-extended {
@@ -342,6 +350,31 @@ s .dark #local-projects .card:hover {
 .highcontrast #view-more-chips {
     color: #ffff00 !important;
 }
+
+.highcontrast .chipselect {
+    background-color: #000000;
+    color: #ffff00;
+    border: 2px solid #ffff00;
+}
+
+.highcontrast .chipselect.selected,
+.highcontrast .chipselect.selected-special {
+    background-color: #ffff00;
+    color: #000000;
+    border: 2px solid #ffff00;
+}
+
+.highcontrast .chipselect.cursor:hover:not(.selected-special) {
+    background-color: #000080;
+    color: #ffff00;
+}
+
+.highcontrast .chipselect:focus,
+.highcontrast .chipselect:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
 .highcontrast #local-projects .card {
     background-color: #000000;
     color: #ffff00;
@@ -457,12 +490,26 @@ s .dark #local-projects .card:hover {
 .highcontrast .dropdown-content {
     background-color: #000000 !important;
     border: 2px solid #ffff00;
-    color: #ffff00 !important;
+    color: #00ffff !important;
 }
 
 .highcontrast .dropdown-content li > a {
-    color: #ffff00 !important;
+    color: #00ffff !important;
     padding: 0.5rem 1rem;
+}
+
+.highcontrast .select-dropdown.dropdown-content li > span {
+    color: #00ffff !important;
+}
+
+.highcontrast .select-dropdown.dropdown-content li.selected > span,
+.highcontrast .select-dropdown.dropdown-content li.active > span {
+    color: #ffff00 !important;
+}
+
+.highcontrast .select-dropdown.dropdown-content li:hover > span {
+    background-color: #000080 !important;
+    color: #ffff00 !important;
 }
 
 .highcontrast .dropdown-content li > a:hover {

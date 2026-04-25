@@ -1535,6 +1535,7 @@ class Activity {
             const title = document.createElement("h2");
             title.textContent = _("Import MIDI");
             title.classList.add("modal-title");
+            title.style.color = platformColor.headingColor;
             modal.appendChild(title);
 
             const container = document.createElement("div");
@@ -1601,6 +1602,7 @@ class Activity {
             const title = document.createElement("h2");
             title.textContent = _("Clear Workspace");
             title.classList.add("modal-title");
+            title.style.color = platformColor.headingColor;
 
             modal.appendChild(title);
             const message = document.createElement("p");
