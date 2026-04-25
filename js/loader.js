@@ -365,6 +365,41 @@ requirejs(["i18next", "i18nextHttpBackend"], function (i18next, i18nextHttpBacke
 
             i18next.on("languageChanged", updateContent);
 
+            // Two-phase bootstrap: load core modules first, then application modules
+            const waitForGlobals = async (retryCount = 0) => {
+                if (typeof window.createjs === "undefined" && retryCount < 50) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    return waitForGlobals(retryCount + 1);
+                }
+            };
+
+            await waitForGlobals();
+
+            // Only pre-define modules that are loaded via script tags in index.html
+            // These modules are already available as globals before RequireJS loads them
+            const PRELOADED_SCRIPTS = [
+                { name: "easeljs.min", export: () => window.createjs },
+                { name: "tweenjs.min", export: () => window.createjs },
+                { name: "jquery", export: () => window.jQuery },
+                { name: "jquery-ui", export: () => window.jQuery.ui },
+                { name: "materialize", export: () => window.Materialize || window.M },
+                { name: "abc", export: () => window.ABCJS },
+                { name: "Tone", export: () => window.Tone },
+                { name: "howler", export: () => window.Howl }
+            ];
+
+            PRELOADED_SCRIPTS.forEach(mod => {
+                if (!requirejs.defined(mod.name) && mod.export && mod.export()) {
+                    define(mod.name, [], function () {
+                        return mod.export();
+                    });
+                }
+            });
+
+            // Note: Other modules like activity/*, utils/* are loaded by RequireJS
+            // from their file paths as configured in requirejs.config().
+            // Do NOT pre-define them here as that prevents RequireJS from loading the actual files.
+
             const CORE_BOOTSTRAP_MODULES = [
                 "easeljs.min",
                 "tweenjs.min",

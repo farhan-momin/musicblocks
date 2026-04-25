@@ -6709,7 +6709,10 @@ class Activity {
                         case "drum":
                             // Find the turtle associated with this block.
                             // eslint-disable-next-line no-case-declarations
-                            const turtle = this.turtles.getTurtle(myBlock.value);
+                            const turtle =
+                                myBlock.value < this.turtles.getTurtleCount()
+                                    ? this.turtles.getTurtle(myBlock.value)
+                                    : null;
                             if (turtle === null || turtle === undefined) {
                                 args = {
                                     id: this.turtles.getTurtleCount(),

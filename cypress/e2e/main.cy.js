@@ -62,6 +62,7 @@ describe("MusicBlocks Application", () => {
             cy.get("#es").then($lang => {
                 if ($lang.length) {
                     cy.wrap($lang).click();
+                    cy.waitForAppReady();
                 } else {
                     cy.log("Language option not available, skipping");
                 }
@@ -70,6 +71,7 @@ describe("MusicBlocks Application", () => {
             cy.get("#aux-toolbar").invoke("show"); // fix toolbar hidden
             cy.get("#languageSelectIcon").click();
             cy.get("#enUS").click();
+            cy.waitForAppReady();
         });
 
         it("should verify fullscreen button exists and is visible", () => {
