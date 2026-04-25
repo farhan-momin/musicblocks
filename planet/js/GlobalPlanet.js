@@ -72,7 +72,7 @@ class GlobalPlanet {
             t = new GlobalTag(Planet);
             t.init({ id: keys[i] });
             this.tags.push(t);
-            if (this.defaultMainTags.indexOf(Planet.TagsManifest[keys[i]].TagName) != -1) {
+            if (this.defaultMainTags.indexOf(Planet.TagsManifest[keys[i]].TagName) !== -1) {
                 t.selected = true;
                 tagsToInitialise.push(t);
             }
@@ -80,7 +80,7 @@ class GlobalPlanet {
 
         this.sortBy = document.getElementById("sort-select").value;
 
-        if (this.defaultTag != false) this.selectSpecialTag(this.defaultTag);
+        if (this.defaultTag !== false) this.selectSpecialTag(this.defaultTag);
 
         for (let i = 0; i < tagsToInitialise.length; i++) tagsToInitialise[i].select();
 
@@ -516,6 +516,22 @@ class GlobalPlanet {
                 this.sortBy = document.getElementById("sort-select").value;
                 this.refreshProjects();
             });
+
+            jQuery("#sort-select")
+                .siblings(".select-dropdown, .caret")
+                .on("mousedown", function (e) {
+                    var input = jQuery(this).parent().find("input.select-dropdown");
+                    if (input.hasClass("active")) {
+                        e.preventDefault();
+                        // Block the upcoming click from reopening the dropdown
+                        jQuery(this).one("click", function (clickEvt) {
+                            clickEvt.preventDefault();
+                            clickEvt.stopImmediatePropagation();
+                        });
+                        // Close the dropdown
+                        jQuery(document).trigger("click");
+                    }
+                });
 
             if (Planet.IsMusicBlocks) {
                 this.defaultMainTags = ["Music"];
