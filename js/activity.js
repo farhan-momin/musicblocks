@@ -250,6 +250,7 @@ class Activity {
 
         this.cellSize = 55;
         this.searchSuggestions = [];
+        this._searchCache = {}; // Cache for search results to improve performance
         this._searchCloseListener = null;
         this.homeButtonContainer;
 
@@ -3275,6 +3276,7 @@ class Activity {
             this.searchBlockPosition = [100, 100];
 
             this.searchSuggestions = [];
+            this._searchCache = {}; // Reset cache to prevent memory leaks
             this.deprecatedBlockNames = [];
 
             // Guard: blocks may not be initialized yet during early loading
@@ -3499,7 +3501,14 @@ class Activity {
                 $search.autocomplete({
                     // Custom source so we can match on extraSearchTerms but show each block only once.
                     source: (request, response) => {
-                        const term = (request.term || "").toLowerCase();
+                        const term = (request.term || "").toLowerCase().trim();
+
+                        // Check cache first for performance
+                        if (that._searchCache[term] !== undefined) {
+                            response(that._searchCache[term]);
+                            return;
+                        }
+
                         const results = that.searchSuggestions.filter(item => {
                             // If there is no active term, show all items.
                             if (!term || term.length === 0) {
@@ -3518,6 +3527,9 @@ class Activity {
                                 item.label.toLowerCase().indexOf(term) !== -1
                             );
                         });
+
+                        // Cache the results for future use
+                        that._searchCache[term] = results;
                         response(results);
                     },
                     appendTo: "body",
@@ -7276,7 +7288,14 @@ class Activity {
             if (!$helpfulSearch.data("autocomplete-init")) {
                 $helpfulSearch.autocomplete({
                     source: (request, response) => {
-                        const term = (request.term || "").toLowerCase();
+                        const term = (request.term || "").toLowerCase().trim();
+
+                        // Check cache first for performance
+                        if (that._searchCache[term] !== undefined) {
+                            response(that._searchCache[term]);
+                            return;
+                        }
+
                         const results = that.searchSuggestions.filter(item => {
                             if (!term || term.length === 0) {
                                 return true;
@@ -7292,6 +7311,9 @@ class Activity {
                                 item.label.toLowerCase().indexOf(term) !== -1
                             );
                         });
+
+                        // Cache the results for future use
+                        that._searchCache[term] = results;
                         response(results);
                     },
                     appendTo: "body",
